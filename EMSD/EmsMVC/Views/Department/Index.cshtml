@@ -1,0 +1,132 @@
+﻿@model IEnumerable<EmsEntities.DepartmentEntities>
+
+@{
+    ViewBag.Title = "Department Records";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Styles.Render("~/Content/bootstrapDataTablesCss")
+
+<h2>Manage Department</h2>
+<h3 id="Result"></h3>
+<div class="pull-right">
+    @Html.ActionLink("Create New", "Create", "Department", new { @class = "btn btn-primary" })
+</div>
+<br />
+<br />
+<table class="table table-striped table-bordered" id="tblDepartment" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                Department ID
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Code
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+</table>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryDataTable")
+    @Scripts.Render("~/bundles/bootbox")
+    @Scripts.Render("~/bundles/bootstrapDataTables")
+    <script>
+        $(document).ready(function () {
+            getDepartments();
+        });
+
+        function getDepartments() {
+            $('#tblDepartment').DataTable(
+                {
+                    "processing": true, // for show progress bar
+                    "serverSide": false, // for process server side
+                    "filter": true, // this is for disable filter (search box)
+                    "pageLength": 10,
+                    //"paging": true,
+                    "destroy": true,
+                    "ajax": { //ajax:to get or retrieve datas to populate HTML table
+                        "url": "/Department/Details",
+                        "type": "GET",
+                        "datatype": "json"
+                    },
+                    "columns": [ //columns: it tells what columns associated with each bind column
+                        { "data": "Id" },
+                        { "data": "Name" },
+                        { "data": "Code" },
+                        {
+                            data: null,
+                            orderable: false,
+                            className: "text-center",
+                            render: function (data, type, row) {
+                                return '<a id="lnkEditUser" data-user-id="' + data.Id + '" href="#" title="Edit User" class="glyphicon glyphicon-edit" style="text-decoration:none;"></a>' +
+                                    '<a id = "lnkDeleteUser" data-user-id="' + data.Id + '" href="#"  title="Delete User" class="glyphicon glyphicon-remove" style="padding-left:10px; text-decoration:none;"></a> ';
+                            }
+                        }
+                    ],
+
+                });
+        }
+
+        $(document).on('click', '#lnkEditUser', function (e) {
+            window.location.href = '@Url.Action("Edit", "Department")?id=' + $(this).data('user-id');
+        })
+
+        $(document).on('click', '#lnkDeleteUser', function () {
+            var departmentId = $(this).data('user-id');
+            bootbox.confirm("Are you sure to delete record ?", function (result) {
+                if (result) {
+                    deleteDepartment(departmentId);
+                }
+            });
+        })
+        function deleteDepartment(departmentId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: JSON.stringify({ id: departmentId }), //use id here
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.success) {
+                        bootbox.alert('Department record deleted successfully.');
+                        getDepartments();
+                    }
+                    else {
+                        bootbox.alert('Some error occurred while processing your request.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('hi departmentId ' + departmentId + error);
+                }
+            });
+        }
+    </script>
+}
+
+@*$(document).on('click', '#lnkDeleteUser', function (e) {
+            bootbox.confirm({
+                message: "Are you sure to delete record?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    bootbox.alert('This was logged in the callback: ' + result);
+                }
+            });
+        //window.location.href = '@Url.Action("Delete", "Department")?id=' + $(this).data('user-id');
+    })*@
