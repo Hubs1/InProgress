@@ -24,6 +24,11 @@ namespace EmsEntities
         public string DepartmentName { get; set; }
 
         public List<DepartmentEntities> DepartmentList; // DropDownListFor
+        public int Salary { get; set; }
+        [Required(ErrorMessage = "Gender can't be empty")]
+        public string Gender { get; set; }
+        [Required(ErrorMessage = "Choose your JobType.")]
+        public bool JobType { get; set; } // same name as SQL table column
     }
     public class DepartmentEntities
     {

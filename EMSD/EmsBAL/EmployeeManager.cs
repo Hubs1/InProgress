@@ -25,7 +25,10 @@ namespace EmsBAL
                 employeeEntity.EId = employee.EId;
                 employeeEntity.Name = employee.Name;
                 employeeEntity.DepartmentId = employee.DepartmentId;
-                //employeeEntity.DepartmentName = employee.Department.Name;
+                employeeEntity.DepartmentName = employee.Department.Name;
+                employeeEntity.Salary = employee.Salary;
+                employeeEntity.Gender = employee.Gender;
+                employeeEntity.JobType = employee.JobType;
                 lstEmployeeEntities.Add(employeeEntity);
             }
             return lstEmployeeEntities;

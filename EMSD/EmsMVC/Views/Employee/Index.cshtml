@@ -18,13 +18,19 @@
     <thead>
         <tr>
             <th>
-                Employee ID
-            </th>
-            <th>
                 Name
             </th>
             <th>
                 Department
+            </th>
+            <th>
+                Salary
+            </th>
+            <th>
+                Gender
+            </th>
+            <th>
+                Job Type (IsPermanent)
             </th>
             <th>
                 Actions
@@ -69,9 +75,12 @@
                     "datatype": "json"
                 },
                 "columns": [ //columns: it tells what columns associated with each bind column
-                    { "data": "EId" },
+                    //{ "data": "EId" },
                     { "data": "Name" },
-                    { "data": "DepartmentId" },
+                    { "data": "DepartmentName" },//DepartmentName is declare in EmsEntities
+                    { "data": "Salary" },
+                    { "data": "Gender" },
+                    { "data": "JobType" },
                     {
                         data: null,
                         orderable: false,

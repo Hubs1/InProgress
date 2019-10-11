@@ -44,6 +44,8 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -66,12 +68,16 @@
     <Compile Include="Repository\EmployeeRepository.cs" />
     <Compile Include="Repository\RepositoryBase.cs" />
     <Compile Include="SqlDatabase.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>SqlDatabase.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="SqlDatabase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>SqlDatabase.tt</DependentUpon>
     </Compile>
-    <Compile Include="SqlDatabase1.Designer.cs">
+    <Compile Include="SqlDatabase.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SqlDatabase.edmx</DependentUpon>
@@ -79,31 +85,36 @@
     <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SqlDatabase.tt">
-      <DependentUpon>SqlDatabase.edmx</DependentUpon>
-    </Content>
-    <EntityDeploy Include="SqlDatabase.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SqlDatabase1.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="SqlDatabase.edmx.diagram">
-      <DependentUpon>SqlDatabase.edmx</DependentUpon>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SqlDatabase.Context.tt">
-      <DependentUpon>SqlDatabase.edmx</DependentUpon>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <EntityDeploy Include="SqlDatabase.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SqlDatabase.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="SqlDatabase.edmx.diagram">
+      <DependentUpon>SqlDatabase.edmx</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EmsEntities\EmsEntities.csproj">
       <Project>{7a18b0a2-8741-4d66-9d2c-622d724d8859}</Project>
       <Name>EmsEntities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SqlDatabase.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SqlDatabase.edmx</DependentUpon>
+      <LastGenOutput>SqlDatabase.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="SqlDatabase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SqlDatabase.edmx</DependentUpon>
+      <LastGenOutput>SqlDatabase.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

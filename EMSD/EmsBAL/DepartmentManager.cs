@@ -14,9 +14,20 @@ namespace EmsBAL
         {
             unitOfWork = new UnitOfWork();
         }
-        public IEnumerable<Department> AllDepartments()
+        public IEnumerable<DepartmentEntities> AllDepartments()
         {
-            return unitOfWork.DepartmentRepository.GetAll();
+            List<DepartmentEntities> listDepartmentEntities = new List<DepartmentEntities>();
+            List<Department> listDepartments = unitOfWork.DepartmentRepository.GetAll().ToList();
+
+            foreach (Department d in listDepartments)
+            {
+                DepartmentEntities departmentEntity = new DepartmentEntities();
+                departmentEntity.Id = d.Id;
+                departmentEntity.Name = d.Name;
+                departmentEntity.Code = d.Code;
+                listDepartmentEntities.Add(departmentEntity);
+            }
+            return listDepartmentEntities;
         }
         public DepartmentEntities GetDepartment(int id)
         {

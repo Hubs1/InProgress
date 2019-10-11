@@ -14,7 +14,7 @@ namespace EmsDAL
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Core.Objects;
     using System.Linq;
-
+    
     public partial class EmployeeDepartment : DbContext
     {
         public EmployeeDepartment()
@@ -126,10 +126,5 @@ namespace EmsDAL
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_UpdateDepartment", deptIdParameter, deptNameParameter, codeParameter);
         }
-
-        //public void SaveChanges()
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }
