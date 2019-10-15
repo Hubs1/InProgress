@@ -24,11 +24,23 @@ namespace EmsEntities
         public string DepartmentName { get; set; }
 
         public List<DepartmentEntities> DepartmentList; // DropDownListFor
+        [Required(ErrorMessage ="Enter your Salary")]//Using [Required] for custom message, Default Message - @Html.ValidationMessageFor()
+        [Range(10000, 100000, ErrorMessage = "Salary between 10,000 to 1,00,000")]
         public int Salary { get; set; }
         [Required(ErrorMessage = "Gender can't be empty")]
-        public string Gender { get; set; }
+        public bool Gender { get; set; }
         [Required(ErrorMessage = "Choose your JobType.")]
-        public bool JobType { get; set; } // same name as SQL table column
+        public int JobType { get; set; } // same name as SQL table column
+        public bool Active { get; set; }
+        public enum Job:int
+        {
+            [Display(Name ="Full-Time")]
+            FullTime=0,
+            PartTime=1,
+            Permanent=2,
+            Temporary=3
+        }
+        public List<Job> Jobs;
     }
     public class DepartmentEntities
     {

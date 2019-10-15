@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using EmsDAL;
 using EmsEntities;
+using static EmsEntities.EmployeeEntities;// for access enum Job
 
 namespace EmsBAL
 {
@@ -29,6 +31,7 @@ namespace EmsBAL
                 employeeEntity.Salary = employee.Salary;
                 employeeEntity.Gender = employee.Gender;
                 employeeEntity.JobType = employee.JobType;
+                employeeEntity.Active = employee.IsActive;
                 lstEmployeeEntities.Add(employeeEntity);
             }
             return lstEmployeeEntities;
@@ -39,7 +42,11 @@ namespace EmsBAL
             EmployeeEntities employeeEntity = new EmployeeEntities();
             employeeEntity.EId = employee.EId;
             employeeEntity.Name = employee.Name;
-            employeeEntity.DepartmentId = employee.DepartmentId;
+            employeeEntity.DepartmentName = employee.Department.Name;
+            employeeEntity.Salary = employee.Salary;
+            employeeEntity.Gender = employee.Gender;
+            employeeEntity.JobType = employee.JobType;
+            employeeEntity.Active = employee.IsActive;
             return employeeEntity;
             throw new NotImplementedException();
         }
@@ -71,5 +78,7 @@ namespace EmsBAL
             }
             return employeeDelete;
         }
+        public object enumData = from Job j in Enum.GetNames(typeof(Job))
+                       select new { id = (int)j, name = j.ToString() };
     }
 }

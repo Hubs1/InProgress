@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="EmployeeDepartmentModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EmployeeDepartmentModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="Id" />
@@ -32,8 +32,9 @@
           <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Salary" Type="int" Nullable="false" />
           <Property Name="DepartmentId" Type="int" Nullable="false" />
-          <Property Name="Gender" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="JobType" Type="bit" Nullable="false" />
+          <Property Name="Gender" Type="bit" Nullable="false" />
+          <Property Name="JobType" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
         </EntityType>
         <Association Name="FK_Id">
           <End Role="Department" Type="Self.Department" Multiplicity="1" />
@@ -86,74 +87,22 @@
             <End Role="Employee" EntitySet="Employee" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EmployeeDepartmentModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="AuditLog">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Action" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="TableName" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="OldValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="NewValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="0" />
-        </EntityType>
-        <EntityType Name="Department">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Code" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Employees" Relationship="Self.FK_Id" FromRole="Department" ToRole="Employee" />
-        </EntityType>
-        <EntityType Name="Employee">
-          <Key>
-            <PropertyRef Name="EId" />
-          </Key>
-          <Property Name="EId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Salary" Type="Int32" Nullable="false" />
-          <Property Name="DepartmentId" Type="Int32" Nullable="false" />
-          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="JobType" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Department" Relationship="Self.FK_Id" FromRole="Employee" ToRole="Department" />
-        </EntityType>
-        <Association Name="FK_Id">
-          <End Role="Department" Type="Self.Department" Multiplicity="1" />
-          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Department">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Employee">
-              <PropertyRef Name="DepartmentId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="EmployeeDepartment" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="AuditLogs" EntityType="Self.AuditLog" />
-          <EntitySet Name="Departments" EntityType="Self.Department" />
-          <EntitySet Name="Employees" EntityType="Self.Employee" />
-          <AssociationSet Name="FK_Id" Association="Self.FK_Id">
-            <End Role="Department" EntitySet="Departments" />
-            <End Role="Employee" EntitySet="Employees" />
-          </AssociationSet>
           <FunctionImport Name="sp_Delete_Employee">
-            <Parameter Name="EmployeeId" Mode="In" Type="Int32" />
+          <Parameter Name="EmployeeId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="sp_DeleteDepartment">
-            <Parameter Name="id" Mode="In" Type="Int32" />
+          <Parameter Name="id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="sp_Department" ReturnType="Collection(String)">
-            <Parameter Name="id" Mode="In" Type="Int32" />
+          <Parameter Name="id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="sp_Get_Employee" ReturnType="Collection(String)">
-            <Parameter Name="id" Mode="In" Type="Int32" />
+          <Parameter Name="id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="sp_Insert_Employee">
             <Parameter Name="name" Mode="In" Type="String" />
@@ -173,46 +122,65 @@
             <Parameter Name="DeptName" Mode="In" Type="String" />
             <Parameter Name="Code" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="AuditLogs" EntityType="EmployeeDepartmentModel.AuditLog" />
+          <EntitySet Name="Departments" EntityType="EmployeeDepartmentModel.Department" />
+          <EntitySet Name="Employees" EntityType="EmployeeDepartmentModel.Employee" />
+          <AssociationSet Name="FK_Id" Association="EmployeeDepartmentModel.FK_Id">
+            <End Role="Department" EntitySet="Departments" />
+            <End Role="Employee" EntitySet="Employees" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="AuditLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Action" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="TableName" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="OldValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="NewValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="Department">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Employees" Relationship="EmployeeDepartmentModel.FK_Id" FromRole="Department" ToRole="Employee" />
+        </EntityType>
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="EId" />
+          </Key>
+          <Property Name="EId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Salary" Type="Int32" Nullable="false" />
+          <Property Name="DepartmentId" Type="Int32" Nullable="false" />
+          <Property Name="Gender" Type="Boolean" Nullable="false" />
+          <Property Name="JobType" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Department" Relationship="EmployeeDepartmentModel.FK_Id" FromRole="Employee" ToRole="Department" />
+        </EntityType>
+        <Association Name="FK_Id">
+          <End Type="EmployeeDepartmentModel.Department" Role="Department" Multiplicity="1" />
+          <End Type="EmployeeDepartmentModel.Employee" Role="Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Department">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Employee">
+              <PropertyRef Name="DepartmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="EmployeeDepartmentModelStoreContainer" CdmEntityContainer="EmployeeDepartment">
-          <EntitySetMapping Name="AuditLogs">
-            <EntityTypeMapping TypeName="EmployeeDepartmentModel.AuditLog">
-              <MappingFragment StoreEntitySet="AuditLog">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Action" ColumnName="Action" />
-                <ScalarProperty Name="TableName" ColumnName="TableName" />
-                <ScalarProperty Name="OldValues" ColumnName="OldValues" />
-                <ScalarProperty Name="NewValues" ColumnName="NewValues" />
-                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Departments">
-            <EntityTypeMapping TypeName="EmployeeDepartmentModel.Department">
-              <MappingFragment StoreEntitySet="Department">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Employees">
-            <EntityTypeMapping TypeName="EmployeeDepartmentModel.Employee">
-              <MappingFragment StoreEntitySet="Employee">
-                <ScalarProperty Name="EId" ColumnName="EId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Salary" ColumnName="Salary" />
-                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="JobType" ColumnName="JobType" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="sp_Delete_Employee" FunctionName="EmployeeDepartmentModel.Store.sp_Delete_Employee" />
           <FunctionImportMapping FunctionImportName="sp_DeleteDepartment" FunctionName="EmployeeDepartmentModel.Store.sp_DeleteDepartment" />
           <FunctionImportMapping FunctionImportName="sp_Department" FunctionName="EmployeeDepartmentModel.Store.sp_Department" />
@@ -221,7 +189,41 @@
           <FunctionImportMapping FunctionImportName="sp_InsertDepartment" FunctionName="EmployeeDepartmentModel.Store.sp_InsertDepartment" />
           <FunctionImportMapping FunctionImportName="sp_Update_Employee" FunctionName="EmployeeDepartmentModel.Store.sp_Update_Employee" />
           <FunctionImportMapping FunctionImportName="sp_UpdateDepartment" FunctionName="EmployeeDepartmentModel.Store.sp_UpdateDepartment" />
-        </EntityContainerMapping>
+          <EntitySetMapping Name="AuditLogs">
+            <EntityTypeMapping TypeName="EmployeeDepartmentModel.AuditLog">
+              <MappingFragment StoreEntitySet="AuditLog">
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+                <ScalarProperty Name="NewValues" ColumnName="NewValues" />
+                <ScalarProperty Name="OldValues" ColumnName="OldValues" />
+                <ScalarProperty Name="TableName" ColumnName="TableName" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Departments">
+            <EntityTypeMapping TypeName="EmployeeDepartmentModel.Department">
+              <MappingFragment StoreEntitySet="Department">
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employees">
+            <EntityTypeMapping TypeName="EmployeeDepartmentModel.Employee">
+              <MappingFragment StoreEntitySet="Employee">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="JobType" ColumnName="JobType" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="Salary" ColumnName="Salary" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="EId" ColumnName="EId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

@@ -18,8 +18,9 @@ namespace EmsDAL
         public string Name { get; set; }
         public int Salary { get; set; }
         public int DepartmentId { get; set; }
-        public string Gender { get; set; }
-        public bool JobType { get; set; }
+        public bool Gender { get; set; }
+        public int JobType { get; set; }
+        public bool IsActive { get; set; }
     
         public virtual Department Department { get; set; }
     }
