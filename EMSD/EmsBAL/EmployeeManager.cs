@@ -30,6 +30,10 @@ namespace EmsBAL
                 employeeEntity.DepartmentName = employee.Department.Name;
                 employeeEntity.Salary = employee.Salary;
                 employeeEntity.Gender = employee.Gender;
+                if (employeeEntity.Gender == true)
+                    employeeEntity.Sex = "Male";
+                else
+                    employeeEntity.Sex = "Female";
                 employeeEntity.JobType = employee.JobType;
                 employeeEntity.Active = employee.IsActive;
                 lstEmployeeEntities.Add(employeeEntity);

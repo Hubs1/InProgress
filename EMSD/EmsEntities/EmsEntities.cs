@@ -29,6 +29,7 @@ namespace EmsEntities
         public int Salary { get; set; }
         [Required(ErrorMessage = "Gender can't be empty")]
         public bool Gender { get; set; }
+        public string Sex { get; set; }
         [Required(ErrorMessage = "Choose your JobType.")]
         public int JobType { get; set; } // same name as SQL table column
         public bool Active { get; set; }

@@ -39,6 +39,7 @@ namespace EmsMVC.Controllers
             var enumData = from Job j in Enum.GetValues(typeof(Job))
                            select new { id = (int)j, name = j.ToString() };
             ViewBag.JobList = new SelectList(enumData, "id", "name");
+            ViewBag.Gender = employeeEntity.Gender.ToString();
             return View();
         }
         // POST: Employee/Add
