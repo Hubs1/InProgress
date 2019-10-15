@@ -69,6 +69,9 @@ namespace EmsMVC.Controllers
         public ActionResult Edit(int id)
         {
             ViewBag.DepartmentList = new SelectList(departmentManager.AllDepartments(), "ID", "Name");
+            var enumData = from Job j in Enum.GetValues(typeof(Job))
+                           select new { id = (int)j, name = j.ToString() };
+            ViewBag.JobList = new SelectList(enumData, "id", "name");
             return View(employeeManager.GetEmployee(id));//Use for saved values show on page
 
         }

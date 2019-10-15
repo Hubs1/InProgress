@@ -36,11 +36,13 @@ namespace EmsEntities
         {
             [Display(Name ="Full-Time")]
             FullTime=0,
-            PartTime=1,
-            Permanent=2,
-            Temporary=3
+            [Display(Name = "Part-Time")]
+            PartTime =1,
+            [Display(Name = "Fixed")]
+            Permanent =2,
+            [Display(Name = "Trainee")]
+            Temporary =3
         }
-        public List<Job> Jobs;
     }
     public class DepartmentEntities
     {

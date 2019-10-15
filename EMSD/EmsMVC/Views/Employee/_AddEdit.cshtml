@@ -28,7 +28,7 @@
     @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
         Male
-        @Html.RadioButtonFor(model => model.Gender, "Male", new { htmlAttributes = new { @class = "form-control" }, @checked = true })
+        @Html.RadioButtonFor(model => model.Gender, "Male", new { htmlAttributes = new { @class = "form-control" } })
         Female
         @Html.RadioButtonFor(model => model.Gender, "Female", new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
@@ -45,8 +45,11 @@
 
 <div class="form-group">
     @Html.LabelFor(model => model.Active, htmlAttributes: new { @class = "control-label col-md-2" })
-    <div class="col-md-10">
+    <div class="col-md-10" id="checkbox">
         @Html.CheckBox("Active")
         @Html.ValidationMessageFor(model => model.Active, "", new { @class = "text-danger" })
     </div>
 </div>
+@*@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}*@

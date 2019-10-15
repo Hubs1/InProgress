@@ -84,14 +84,25 @@
                     { "data": "Salary" },
                     { "data": "Gender" },
                     { "data": "JobType" },
-                    { "data": "IsActive" },
+                    {
+                        "data": "Active",
+                        orderable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            if ($("IsActive" == true)) {
+                                return '<span class="glyphicon glyphicon-ok" style="color:green;text-decoration:none;"></span>'
+                            }
+                            else
+                                return '<span class="glyphicon glyphicon-remove" style="color:red;text-decoration:none;"></span> ';
+                        }
+                    },
                     {
                         data: null,
                         orderable: false,
                         className: "text-center",
                         render: function (data, type, row) {
                             return '<a id="lnkEditEmployee" data-employee-id="' + data.EId + '" href="#" title="Edit Employee" class="glyphicon glyphicon-edit" style="text-decoration:none;"></a>' +
-                                '<a id = "lnkDeleteEmployee" data-employee-id="' + data.EId + '" href="#"  title="Delete Employee" class="glyphicon glyphicon-remove" style="padding-left:10px; text-decoration:none;"></a> ';
+                                '<a id = "lnkDeleteEmployee" data-employee-id="' + data.EId + '" href="#"  title="Delete Employee" class="glyphicon glyphicon-trash" style="padding-left:10px; text-decoration:none;"></a> ';
                         }
                     }
                 ],

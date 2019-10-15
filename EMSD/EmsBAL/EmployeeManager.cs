@@ -42,6 +42,7 @@ namespace EmsBAL
             EmployeeEntities employeeEntity = new EmployeeEntities();
             employeeEntity.EId = employee.EId;
             employeeEntity.Name = employee.Name;
+            employeeEntity.DepartmentId = employee.DepartmentId;
             employeeEntity.DepartmentName = employee.Department.Name;
             employeeEntity.Salary = employee.Salary;
             employeeEntity.Gender = employee.Gender;
@@ -55,6 +56,10 @@ namespace EmsBAL
             Employee employeeAdd = new Employee();
             employeeAdd.Name = employeeEntity.Name;
             employeeAdd.DepartmentId = employeeEntity.DepartmentId;
+            employeeAdd.Salary = employeeEntity.Salary;
+            employeeAdd.Gender = employeeEntity.Gender;
+            employeeAdd.JobType = employeeEntity.JobType;
+            employeeAdd.IsActive = employeeEntity.Active;
             unitOfWork.EmployeeRepository.Add(employeeAdd);
             unitOfWork.Save();
             return employeeAdd;
@@ -64,7 +69,11 @@ namespace EmsBAL
             Employee employeeUpdate = unitOfWork.EmployeeRepository.GetById(id);
             employeeUpdate.Name = employeeEntity.Name;
             employeeUpdate.DepartmentId = employeeEntity.DepartmentId;
-            //unitOfWork.EmployeeRepository.UpdateEmployee(employeeUpdate);            
+            employeeUpdate.Salary = employeeEntity.Salary;
+            employeeUpdate.Gender = employeeEntity.Gender;
+            employeeUpdate.JobType = employeeEntity.JobType;
+            employeeUpdate.IsActive = employeeEntity.Active;
+            unitOfWork.EmployeeRepository.UpdateEmployee(employeeUpdate);            
             unitOfWork.Save();
             return employeeUpdate;
         }
@@ -78,7 +87,5 @@ namespace EmsBAL
             }
             return employeeDelete;
         }
-        public object enumData = from Job j in Enum.GetNames(typeof(Job))
-                       select new { id = (int)j, name = j.ToString() };
     }
 }
