@@ -35,6 +35,14 @@ namespace EmsBAL
                 else
                     employeeEntity.Sex = "Female";
                 employeeEntity.JobType = employee.JobType;
+                if (employeeEntity.JobType == 0)
+                    employeeEntity.JobName = "Full-Time";
+                else if (employeeEntity.JobType == 1)
+                    employeeEntity.JobName = "Part-Time";
+                else if (employeeEntity.JobType == 2)
+                    employeeEntity.JobName = "Fixed";
+                else if (employeeEntity.JobType == 3)
+                    employeeEntity.JobName = "Trainee";
                 employeeEntity.Active = employee.IsActive;
                 lstEmployeeEntities.Add(employeeEntity);
             }

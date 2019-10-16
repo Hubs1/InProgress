@@ -26,12 +26,6 @@ namespace EmsMVC.Controllers
         {
             return Json(new { data = employeeManager.GetEmployees() }, JsonRequestBehavior.AllowGet);
         }
-
-        //private List<Department> GetDepartments()
-        //{
-        //    return departmentManager.AllDepartments().ToList();
-        //    throw new NotImplementedException();
-        //}
         public ActionResult Add()
         {
             EmployeeEntities employeeEntity = new EmployeeEntities();

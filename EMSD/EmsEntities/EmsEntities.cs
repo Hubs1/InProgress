@@ -32,6 +32,7 @@ namespace EmsEntities
         public string Sex { get; set; }
         [Required(ErrorMessage = "Choose your JobType.")]
         public int JobType { get; set; } // same name as SQL table column
+        public string JobName { get; set; }// display JobName on Index page
         public bool Active { get; set; }
         public enum Job:int
         {
