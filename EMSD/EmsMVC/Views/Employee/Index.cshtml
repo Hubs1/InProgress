@@ -89,11 +89,11 @@
                         orderable: false,
                         className: "text-center",
                         render: function (data, type, row) {
-                            if ($("IsActive" == true)) {
-                                return '<span class="glyphicon glyphicon-ok" style="color:green;text-decoration:none;"></span>'
+                            if (data === true) {
+                                return '<span class="glyphicon glyphicon-ok" style="color:green;text-decoration:none;"></span>';
                             }
                             else
-                                return '<span class="glyphicon glyphicon-remove" style="color:red;text-decoration:none;"></span> ';
+                                return '<span class="glyphicon glyphicon-remove" style="color:red;text-decoration:none;"></span>';
                         }
                     },
                     {
