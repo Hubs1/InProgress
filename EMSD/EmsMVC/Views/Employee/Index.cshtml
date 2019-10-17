@@ -1,47 +1,62 @@
 ﻿@model IEnumerable<EmsEntities.EmployeeEntities>
-
 @{
     ViewBag.Title = "Employee Records";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 @Styles.Render("~/Content/bootstrapDataTablesCss")
-
 <h2>Manage Employee</h2>
-<h3 id="Result"></h3>
+<div class="alert alert-success alert-dismissible" style="display:none" id="success">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close" style="color:red">&times;</a>
+    <p style="text-align:center"><strong>Success!</strong> Action performed successfully.</p>    
+</div>
+<div class="alert alert-danger" alert-dismissible" style="display:none">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <p style="text-align:center"><strong>OOPS!</strong> Action performed unsuccessfully.</p>    
+</div>
 <div class="pull-right">
     @Html.ActionLink("Create New", "Add", "Employee", new { @class = "btn btn-primary" })
+    @Html.ActionLink("DeleteAll", "Delete", "Employee", new { @class = "btn btn-info" })
 </div>
 <br />
 <br />
-<table class="table table-striped table-bordered" id="tblEmployee" style="width:100%">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Department
-            </th>
-            <th>
-                Salary
-            </th>
-            <th>
-                Gender
-            </th>
-            <th>
-                Job Type
-            </th>
-            <th>
-                IsActive
-            </th>
-            <th>
-                Actions
-            </th>
-        </tr>
-    </thead>
-</table>
+<div id="checkboxes">
+    <table class="table table-striped table-bordered" id="tblEmployee" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" id="checkall" />
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Department
+                </th>
+                <th>
+                    Salary
+                </th>
+                <th>
+                    Gender
+                </th>
+                <th>
+                    Job Type
+                </th>
+                <th>
+                    IsActive
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+    </table>
+    @* for display delete values *@
+    @*<p><b>Selected rows data:</b></p>
+    <pre id="example-console-rows"></pre>
 
+    <p><b>Form data as submitted to the server:</b></p>
+    <pre id="example-console-form"></pre>*@
+</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryDataTable")
@@ -50,6 +65,18 @@
     <script type="text/javascript">
         $(document).ready(function () {
             getEmployees();
+
+            // Grab a reference to the check all box:
+            var checkAllBox = $("#checkall");
+
+            //Set the default value of the global checkbox to true: checkAllBox.prop('checked', true);
+
+            // Attach the call to toggleChecked to the
+            // click event of the global checkbox:
+            checkAllBox.click(function () {
+                var status = checkAllBox.prop('checked');
+                toggleChecked(status);
+            });
         });
 
         $(document).on('click', '#lnkEditEmployee', function (e) {
@@ -57,15 +84,16 @@
         })
 
         $(document).on('click', '#lnkDeleteEmployee', function () {
-            var employeeId = $(this).data('employee-id');         
-            bootbox.confirm("Are you sure to delete record ?", function (result) {                
-                if (result) {                       
-                    deleteEmployee(employeeId);                    
+            var employeeId = $(this).data('employee-id');
+            bootbox.confirm("Are you sure to delete record ?", function (result) {
+                if (result) {
+                    deleteEmployee(employeeId);
                 }
-            }); 
+            });
         })
 
-        function getEmployees() {    
+        var rows_selected = [];// Array holding selected row IDs
+        function getEmployees() {
             $('#tblEmployee').DataTable({
                 "processing": true, // for show progress bar
                 "serverSide": false, // for process server side
@@ -77,8 +105,23 @@
                     "type": "GET",
                     "datatype": "json"
                 },
+                //'checkboxes': {
+                //    'selectRow': true
+                //},
+                'order': [
+                    [1, 'asc']
+                ],
                 "columns": [ //columns: it tells what columns associated with each bind column
-                    //{ "data": "EId" },
+                    {
+                        "data": "EId",
+                        targets: 0,
+                        orderable: false,
+                        searchable: false,
+                        className: 'select-checkbox text-center',
+                        render: function (data, type, full, meta) {
+                            return '<input type="checkbox" class="checkbox">';
+                        }
+                    },
                     { "data": "Name" },
                     { "data": "DepartmentName" },//DepartmentName is declare in EmsEntities
                     { "data": "Salary" },
@@ -119,7 +162,7 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
                     if (data.success) {
-                        alert("Success");
+                        //alert("Success");
                         bootbox.alert('Employee record deleted successfully.');
                         getEmployees();
                     }
@@ -127,9 +170,17 @@
                         bootbox.alert('Some error occurred while processing your request.');
                     }
                 },
-                error: function (xhr, status, error) {     
+                error: function (xhr, status, error) {
                     alert('hi ' + error);
                 }
+            });
+        }
+
+        function toggleChecked(status) {
+            $("#checkboxes input").each(function () {
+                // Set the checked status of each to match the 
+                // checked status of the check all checkbox:
+                $(this).prop("checked", status);
             });
         }
     </script>

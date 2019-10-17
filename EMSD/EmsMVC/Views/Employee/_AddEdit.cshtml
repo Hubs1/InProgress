@@ -26,16 +26,20 @@
 
 <div class="form-group">
     @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
-    <div class="col-md-10">
+    <div class="col-md-10 radio">
         @*@Html.RadioButtonFor(model => model.Gender,"Male")*@ @*Runtime Error(Store and display value mismatch)*@
         @*@Html.RadioButtonFor(m => m.Gender, "M", new { @checked = 'M' }) : M*@ @*Remove error value name and html attribute must be same ["M"=='M']*@
-        @Html.RadioButtonFor(model => model.Gender, "True", new { @checked = true })
-        Male
+        <label>
+            @Html.RadioButtonFor(model => model.Gender, "True", new { @checked = true })
+            Male
+        </label>
         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
         @*@Html.RadioButtonFor(model => model.Gender,"Female")*@
         @*@Html.RadioButtonFor(m => m.Gender, "F") : F*@
-        @Html.RadioButtonFor(model => model.Gender, "False")
-        Female
+        <label>
+            @Html.RadioButtonFor(model => model.Gender, "False")
+            Female
+        </label>
         <br>
         @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
     </div>
@@ -51,8 +55,8 @@
 
 <div class="form-group">
     @Html.LabelFor(model => model.Active, htmlAttributes: new { @class = "control-label col-md-2" })
-    <div class="col-md-10" id="checkbox">
-        @Html.CheckBox("Active")
+    <div class="col-md-10 checkbox">
+        <label>@Html.CheckBox("Active")</label>
         @Html.ValidationMessageFor(model => model.Active, "", new { @class = "text-danger" })
     </div>
 </div>
