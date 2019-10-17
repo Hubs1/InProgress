@@ -20,14 +20,16 @@
         @Html.Partial("_EditCreate")
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="col-md-offset-3 col-md-10">
                 <input type="submit" value="Create" class="btn btn-success" />
+                @Html.ActionLink("Cancel", "Index", "Department", new { @class = "btn btn-warning" })
+                @*<a class="btn-warning col-md-offset-1" href="~/Views/Department/Index.cshtml"></a>*@
             </div>
         </div>
     </div>
 }
 
-<div>
+<div style="display:none">
     @Html.ActionLink("Back to List", "Index")
 </div>
 @section Scripts {

@@ -4,14 +4,31 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @Styles.Render("~/Content/bootstrapDataTablesCss")
+
+@*<head>
+    <style>
+        table.dataTable tr th.select-checkbox.selected::after {
+            content: "✔";
+            margin-top: -11px;
+            margin-left: -4px;
+            text-align: center;
+            text-shadow: rgb(176, 190, 217) 1px 1px, rgb(176, 190, 217) -1px -1px, rgb(176, 190, 217) 1px -1px, rgb(176, 190, 217) -1px 1px;
+        }
+        h2{
+            font-family:'Times New Roman', Times, serif;
+            color:blueviolet;
+        }
+    </style>
+</head>*@
+
 <h2>Manage Employee</h2>
 <div class="alert alert-success alert-dismissible" style="display:none" id="success">
     <a href="#" class="close" data-dismiss="alert" aria-label="close" style="color:red">&times;</a>
-    <p style="text-align:center"><strong>Success!</strong> Action performed successfully.</p>    
+    <p style="text-align:center"><strong>Success!</strong> Action performed successfully.</p>
 </div>
 <div class="alert alert-danger" alert-dismissible" style="display:none">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    <p style="text-align:center"><strong>OOPS!</strong> Action performed unsuccessfully.</p>    
+    <p style="text-align:center"><strong>OOPS!</strong> Action performed unsuccessfully.</p>
 </div>
 <div class="pull-right">
     @Html.ActionLink("Create New", "Add", "Employee", new { @class = "btn btn-primary" })
@@ -24,7 +41,7 @@
         <thead>
             <tr>
                 <th>
-                    <input type="checkbox" id="checkall" />
+                    <input type="checkbox" id="checkall" class="checkall" />
                 </th>
                 <th>
                     Name
@@ -52,17 +69,17 @@
     </table>
     @* for display delete values *@
     @*<p><b>Selected rows data:</b></p>
-    <pre id="example-console-rows"></pre>
+        <pre id="example-console-rows"></pre>
 
-    <p><b>Form data as submitted to the server:</b></p>
-    <pre id="example-console-form"></pre>*@
+        <p><b>Form data as submitted to the server:</b></p>
+        <pre id="example-console-form"></pre>*@
 </div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryDataTable")
-    @Scripts.Render("~/bundles/bootbox")
-    @Scripts.Render("~/bundles/bootstrapDataTables")
-    <script type="text/javascript">
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryDataTable")
+        @Scripts.Render("~/bundles/bootbox")
+        @Scripts.Render("~/bundles/bootstrapDataTables")
+        <script type="text/javascript">
         $(document).ready(function () {
             getEmployees();
 
@@ -105,9 +122,9 @@
                     "type": "GET",
                     "datatype": "json"
                 },
-                //'checkboxes': {
-                //    'selectRow': true
-                //},
+                'select': {
+                    'style': 'multi'
+                },
                 'order': [
                     [1, 'asc']
                 ],
@@ -117,7 +134,10 @@
                         targets: 0,
                         orderable: false,
                         searchable: false,
-                        className: 'select-checkbox text-center',
+                        className: 'text-center',
+                        checkboxes: {
+                            'selectRow': true
+                        },
                         render: function (data, type, full, meta) {
                             return '<input type="checkbox" class="checkbox">';
                         }
@@ -178,10 +198,10 @@
 
         function toggleChecked(status) {
             $("#checkboxes input").each(function () {
-                // Set the checked status of each to match the 
+                // Set the checked status of each to match the
                 // checked status of the check all checkbox:
                 $(this).prop("checked", status);
             });
         }
-    </script>
-}
+        </script>
+    }

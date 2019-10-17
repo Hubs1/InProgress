@@ -17,11 +17,12 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-success" />
+                @Html.ActionLink("Cancel", "Index", "Department", new { @class = "btn btn-warning" })
             </div>
         </div>
     </div>
 }
-<div>
+<div style="display:none">
     @Html.ActionLink("Back to List", "Index")
 </div>
 @section Scripts {
