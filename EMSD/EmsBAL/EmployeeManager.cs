@@ -99,5 +99,21 @@ namespace EmsBAL
             }
             return employeeDelete;
         }
+        public Employee DeleteEmployees(int Eid, Employee eEntity)//,EmployeeEntities employeeEntity
+        {
+            Employee employeeDelete = unitOfWork.EmployeeRepository.GetById(Eid);
+            List<Employee> lstEmployee = unitOfWork.EmployeeRepository.GetAll().ToList();
+            foreach (Employee employee in lstEmployee)
+            {
+                //Employee employeeDelete = unitOfWork.EmployeeRepository.GetById(Eid);
+                if (employeeDelete != null)
+                {
+                    unitOfWork.EmployeeRepository.Delete(employeeDelete);
+                    unitOfWork.Save();
+                }
+            }
+            lstEmployee.Add(eEntity);
+            return employeeDelete;
+        }
     }
 }

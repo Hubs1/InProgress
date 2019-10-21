@@ -41,6 +41,7 @@ namespace EmsMVC.Controllers
         public ActionResult Add(EmployeeEntities employeeEntity)
         {
             employeeManager.AddEmployee(employeeEntity);
+            ViewBag.Save = employeeEntity;//for alert
             return RedirectToAction("Index");
         }
 
@@ -74,7 +75,25 @@ namespace EmsMVC.Controllers
         public ActionResult Edit(int id, EmployeeEntities employeeEntity)
         {
             employeeManager.EditEmployee(id, employeeEntity);
+            ViewBag.Save = employeeEntity;//for alert
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult DeleteConfirm(int id, Employee eDelete)
+        {
+            bool isSuccess = false;
+            try
+            {
+                employeeManager.DeleteEmployees(id,eDelete);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return Json(new { success = isSuccess });
         }
     }
 }

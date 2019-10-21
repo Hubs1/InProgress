@@ -2,10 +2,6 @@
 @{
     ViewBag.Title = "Employee Records";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    if (ViewBag.Save == null)
-    {
-        //ViewBag.Save = new EmsMVC.Controllers.EmployeeController().Save(ViewBag.Save);
-    }
 }
 @Styles.Render("~/Content/bootstrapDataTablesCss")
 
@@ -30,19 +26,17 @@
     <a href="#" class="close" data-dismiss="alert" aria-label="close" style="color:red">&times;</a>
     <p style="text-align:center"><strong>Success!</strong> Action performed successfully.</p>
 </div>
-<div class="alert alert-danger alert-dismissible" style="display:none" id="danger">
+<div class="alert alert-danger" alert-dismissible" style="display:none" id="danger">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     <p style="text-align:center"><strong>OOPS!</strong> Action performed unsuccessfully.</p>
 </div>
 <div class="pull-left">
     @*<label>ShowAlert/ DoubleClick: <input type="checkbox" id="checkAlert" onclick="alerts()"></label>*@
-    @*<label>ShowAlert: @Html.CheckBox("Active", new { @id = "checkAlert", @onclick = "alerts()" })</label>*@
-    <button class="btn btn-danger" id="buttonAlert" , onclick="alerts()" style="display:none">DeleteAll</button>
-    @*@Html.ActionLink("DeleteAll","Index", "Employee", new { @class = "btn btn-danger", @id = "buttonAlert", @onclick = "alerts()", @style = "display:none" })*@
+    <label>@Html.CheckBox("Active", new { @id = "checkAlert", @onclick = "alerts()" })</label>
 </div>
 <div class="pull-right">
     @Html.ActionLink("Create New", "Add", "Employee", new { @class = "btn btn-primary" })
-    @*@Html.ActionLink("DeleteAll", "Delete", "Employee", new { @class = "btn btn-info", @id = "buttonAlert", @onclick = "alerts()" })*@
+    @Html.ActionLink("DeleteAll", "Delete", "Employee", new { @class = "btn btn-info" })
 </div>
 <br />
 <br />
@@ -89,7 +83,7 @@
     @Scripts.Render("~/bundles/jqueryDataTable")
     @Scripts.Render("~/bundles/bootbox")
     @Scripts.Render("~/bundles/bootstrapDataTables")
-<script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function () {
             getEmployees();
 
@@ -104,25 +98,6 @@
                 var status = checkAllBox.prop('checked');
                 toggleChecked(status);
             });
-
-            //chkbtn();
-
-            //alerts();
-
-            //$('#tblEmployee tbody').on('click', 'tr', function () {
-            //    if ($(this).hasClass('selected')) {
-            //        $(this).removeClass('selected');
-            //    }
-            //    else {
-            //        table.$('tr.selected').removeClass('selected');
-            //        $(this).addClass('selected');
-            //    }
-            //});
-
-            //$('#buttonAlert').click(function () {
-            //    $('#tblEmployee').DataTable.row('.selected').remove().draw(false);
-            //});
-
         });
 
         $(document).on('click', '#lnkEditEmployee', function (e) {
@@ -168,7 +143,7 @@
                             'selectRow': true
                         },
                         render: function (data, type, full, meta) {
-                            return '<input type="checkbox" class="checkbox" name="chk" id="chk">';
+                            return '<input type="checkbox" class="checkbox">';
                         }
                     },
                     { "data": "Name" },
@@ -233,112 +208,21 @@
             });
         }
 
-        $('#buttonAlert').click(function () {
-            var eAlert =@Html.Raw(Json.Encode(ViewBag.Save));
-            alert(eAlert);
-
-            // row delete only in Datatable
-            //var checked = jQuery('input:checkbox:checked').map(function () {
-            //    return this.value;
-            //}).get();
-            jQuery('input:checkbox:checked').parents("tr").remove(); // row delete only in Datatable
-
-            //debugger
-            //var eAlert =ViewBag.employeeAlert; // not defined
-            //alert(@ViewBag.employeeAlert);
-
-            /*
-            // Apply debug on JavaScript with "debugger" above the code
-            debugger
-            */
-
-            if (eAlert != null) {
-            //if (checkBox.checked == true) {
-            //if ($('#chk.checked' != true)) {
-                success.style.display = "block";
-                danger.style.display = "none";
-                
-                //$("#success").fadeOut(5000);
-                //$("#success").slideUp(10000);
-                //$("#success").slideDown(5000).slideUp(5000); //comment this line for "slideDown,slideUp" - success.style.display = "block";
-
-                //Alter auto close in seconds
-                window.setTimeout(function () {
-                    $("#success").alert('close');
-                }, 10000);
-            } else {
-                danger.style.display = "block";
-                success.style.display = "none";
-                $("#danger").slideUp(5000);
-                //$("#danger").fadeOut(4000);
-                //$("#danger").slideDown(5000).slideUp(5000); //comment - danger.style.display = "block";
-
-                ////Alter auto close in seconds
-                //window.setTimeout(function () {
-                //    $("#danger").alert('close');
-                //}, 5000);
-            }
-
-            /*//using alert with checkbox
+        function alerts() {
             var checkBox = document.getElementById("checkAlert");
             if (checkBox.checked == true) {
                 success.style.display = "block";
                 danger.style.display = "none";
-                //Alter auto close in seconds
-                window.setTimeout(function () {
-                    $("#success").alert('close');
-                }, 7000);
             } else {
                 danger.style.display = "block";
                 success.style.display = "none";
-                $("#danger").slideUp(5000);
-                //Alter auto close in seconds
-                window.setTimeout(function () {
-                    $("#danger").alert('close');
-                }, 5000);
             }
-            */
-        });
+        }
 
         $(document).on('dblclick', '#checkAlert', function (e) {
-            if (ViewBag.Save != null)
-                $("success").show();
             success.style.display = "none";
             danger.style.display = "none";
-    })
+        })
 
-    //Display no. of checkbox selected in alert
-    function chkbtn() {
-        var chkcount = $('tbody input[name="chk"]:checked').length;
-        //debugger
-        //alert(chkcount);
-        if (chkcount > 1) {
-            buttonAlert.style.display = "block";
-            //$("#buttonAlert").hide(15000);
-            //$("#buttonAlert").fadeOut(50000);
-        }
-        else
-            buttonAlert.style.display = "none";
-    }
-
-    //Display DeleteAll button when checkbox(id=checkall) is checked or vice versa [top checkall]
-    $("#tblEmployee input:checkbox").on("change", function () {
-        var checkBox = document.getElementById("checkall");
-        if (checkBox == true)
-            buttonAlert.style.display = "block";
-        else
-            buttonAlert.style.display = "none";
-        chkbtn();
-    });
-
-    //Display DeleteAll button when checkbox count > 1
-    $(document).on('click', '#chk', function () {
-        chkbtn();
-    })
-
-    //$("#chk").click(function () {
-    //    chkbtn();
-    //})    
-
-</script>
+    </script>
 }
