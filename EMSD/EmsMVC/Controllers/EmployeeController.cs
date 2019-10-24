@@ -16,10 +16,27 @@ namespace EmsMVC.Controllers
         EmployeeManager employeeManager = new EmployeeManager();
         DepartmentManager departmentManager = new DepartmentManager();
 
+        #region Delete multiple records using checkbox
+        //private EmployeeDepartment db = new EmployeeDepartment();
+        //[HttpPost]
+        //public ActionResult Index(FormCollection formCollection)
+        //{
+        //    string[] ids = formCollection["ID"].Split(new char[] { ',' });
+        //    foreach (string id in ids)
+        //    {
+        //        var employee = this.db.Employees.Find(int.Parse(id));
+        //        this.db.Employees.Remove(employee);
+        //        this.db.SaveChanges();
+        //    }
+        //    return RedirectToAction("Index");
+        //}
+        #endregion
+
         // GET: /Employee/
         [HttpGet]
         public ActionResult Index()
         {
+            //ViewBag.Save = true;
             return View();
         }
         public ActionResult GetList()
@@ -38,13 +55,15 @@ namespace EmsMVC.Controllers
         }
         // POST: Employee/Add
         [HttpPost]
-        public ActionResult Add(EmployeeEntities employeeEntity)
+        public ActionResult Add(EmployeeEntities employeeEntity)//, int id)
         {
+            //ViewBag.EmployeeId = id;// Imp to set viewbag for top shared menu
             employeeManager.AddEmployee(employeeEntity);
-            ViewBag.Save = employeeEntity;//for alert
+            //if (employeeManager.AddEmployee(employeeEntity) != null) { ViewBag.Save = true; } //for alert
             return RedirectToAction("Index");
         }
 
+        #region Delete record in database using action method Delete(int id)
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -61,6 +80,7 @@ namespace EmsMVC.Controllers
 
             return Json(new { success = isSuccess });
         }
+        #endregion
 
         public ActionResult Edit(int id)
         {
@@ -75,25 +95,44 @@ namespace EmsMVC.Controllers
         public ActionResult Edit(int id, EmployeeEntities employeeEntity)
         {
             employeeManager.EditEmployee(id, employeeEntity);
-            ViewBag.Save = employeeEntity;//for alert
+            //var edit = employeeManager.EditEmployee(id, employeeEntity);
+            //if (edit != null) { ViewBag.Save = true; } //for alert
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Delete selected checkboxes
+        /// </summary>
+        private EmployeeDepartment db = new EmployeeDepartment();
         [HttpPost]
-        public ActionResult DeleteConfirm(int id, Employee eDelete)
+        public ActionResult DeleteConfirm(string Ids,FormCollection formCollection)
         {
+            //char[] first = Ids.Take(1).ToArray();
+            //if (first[0].ToString() == ",")
+            //{
+            //    Ids = Ids.Remove(0, 1);
+            //}
+            string[] ids = Ids.Split(new char[] { ',' });
             bool isSuccess = false;
-            try
+            foreach (string ID in ids)
             {
-                employeeManager.DeleteEmployees(id,eDelete);
-                isSuccess = true;
-            }
-            catch (Exception ex)
-            {
+                //bool isSuccess = false;
+                try
+                {
+                    employeeManager.DeleteAll(int.Parse(ID));
+                    isSuccess = true;
+                }
+                catch (Exception ex)
+                {
 
+                }
             }
+            return Json(new { success = isSuccess, rows=Ids });
+        }
 
-            return Json(new { success = isSuccess });
+        public bool IsActive(int id, bool forceFullHit = false)
+        {
+            return this.employeeManager.IsActive(id);
         }
     }
 }

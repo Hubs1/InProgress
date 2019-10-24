@@ -25,7 +25,7 @@ namespace EmsEntities
 
         public List<DepartmentEntities> DepartmentList; // DropDownListFor
         [Required(ErrorMessage ="Enter your Salary")]//Using [Required] for custom message, Default Message - @Html.ValidationMessageFor()
-        [Range(10000, 100000, ErrorMessage = "Salary between 10,000 to 1,00,000")]
+        [Range(10000, 150000, ErrorMessage = "Salary between 10,000 to 1,50,000")]
         public int Salary { get; set; }
         [Required(ErrorMessage = "Gender can't be empty")]
         public bool Gender { get; set; }

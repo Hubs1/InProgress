@@ -30,6 +30,7 @@ namespace EmsBAL
                 employeeEntity.DepartmentName = employee.Department.Name;
                 employeeEntity.Salary = employee.Salary;
                 employeeEntity.Gender = employee.Gender;
+                //employeeEntity.Sex = employeeEntity.Gender == true ? "Male" : "Female";
                 if (employeeEntity.Gender == true)
                     employeeEntity.Sex = "Male";
                 else
@@ -115,5 +116,20 @@ namespace EmsBAL
             lstEmployee.Add(eEntity);
             return employeeDelete;
         }
+
+        public bool IsActive(int id)
+        {
+            var alert = this.GetEmployee(id) ?? new EmployeeEntities();
+            return alert.Active;
+        }
+
+        //public Employee DeleteAll(int id) {
+        public void DeleteAll(int id) {
+            Employee deleteAll = unitOfWork.EmployeeRepository.GetById(id);
+            unitOfWork.EmployeeRepository.Delete(deleteAll);
+            unitOfWork.Save();
+                //return deleteAll;
+        }
+
     }
 }
