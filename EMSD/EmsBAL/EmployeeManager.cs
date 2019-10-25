@@ -117,16 +117,28 @@ namespace EmsBAL
             return employeeDelete;
         }
 
-        public bool IsActive(int id)
+        public bool IsAlert(int id)
         {
             var alert = this.GetEmployee(id) ?? new EmployeeEntities();
-            return alert.Active;
+            return alert.Status;
         }
 
-        //public Employee DeleteAll(int id) {
-        public void DeleteAll(int id) {
-            Employee deleteAll = unitOfWork.EmployeeRepository.GetById(id);
-            unitOfWork.EmployeeRepository.Delete(deleteAll);
+        //public Employee DeleteSelected(string eIds) {
+        //    bool isSuccess = false;
+        //    try
+        //    {
+        //        employeeManager.DeleteEmployee(id);
+        //        isSuccess = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return Json(new { success = isSuccess });
+        //}
+        public void DeleteSelected(int id) {
+            Employee deleteSelect = unitOfWork.EmployeeRepository.GetById(id);
+            unitOfWork.EmployeeRepository.Delete(deleteSelect);
             unitOfWork.Save();
                 //return deleteAll;
         }

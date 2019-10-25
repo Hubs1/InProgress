@@ -13,7 +13,7 @@ namespace EmsEntities
     {
         public int EId { get; set; }
 
-        [Required(ErrorMessage = "Please enter your name.")]
+        //[Required(ErrorMessage = "Please enter your name.")]
         [Display(Name = "Your Name")]
         [StringLength(20)]
         public string Name { get; set; }
@@ -34,6 +34,8 @@ namespace EmsEntities
         public int JobType { get; set; } // same name as SQL table column
         public string JobName { get; set; }// display JobName on Index page
         public bool Active { get; set; }
+        public bool Status { get; set; }
+
         public enum Job:int
         {
             [Display(Name ="Full-Time")]

@@ -58,9 +58,20 @@ namespace EmsMVC.Controllers
         public ActionResult Add(EmployeeEntities employeeEntity)//, int id)
         {
             //ViewBag.EmployeeId = id;// Imp to set viewbag for top shared menu
-            employeeManager.AddEmployee(employeeEntity);
-            //if (employeeManager.AddEmployee(employeeEntity) != null) { ViewBag.Save = true; } //for alert
-            return RedirectToAction("Index");
+            try
+            {
+                employeeManager.AddEmployee(employeeEntity);
+                if (employeeEntity != null) { TempData["Success"] = "Employee added successfully"; } // for alert
+                return RedirectToAction("Index");
+            }
+            catch (Exception e) // for error handling database action and show in bootstrap alert
+            {
+                //if (e.Message != null) { TempData["Error"] = e.Message; }
+                if (e.Message != null) { TempData["Error"] = e.InnerException.InnerException.Message; }
+                else { TempData["Error"] = "Unknown"; }
+
+                return RedirectToAction("Index");
+            }
         }
 
         #region Delete record in database using action method Delete(int id)
@@ -75,9 +86,10 @@ namespace EmsMVC.Controllers
             }
             catch (Exception ex)
             {
-
+                if (ex.Message.Contains("UniqueConstraint")) { TempData["Error"] = ex.Message; }
+                else { TempData["Error"] = "Unknown"; }
+                return RedirectToAction("Index");
             }
-
             return Json(new { success = isSuccess });
         }
         #endregion
@@ -94,10 +106,19 @@ namespace EmsMVC.Controllers
         [HttpPost]
         public ActionResult Edit(int id, EmployeeEntities employeeEntity)
         {
-            employeeManager.EditEmployee(id, employeeEntity);
-            //var edit = employeeManager.EditEmployee(id, employeeEntity);
-            //if (edit != null) { ViewBag.Save = true; } //for alert
-            return RedirectToAction("Index");
+            try
+            {
+                employeeManager.EditEmployee(id, employeeEntity);
+                if (employeeEntity != null) { TempData["Update"] = "Employee updated successfully"; } // for alert
+                return RedirectToAction("Index");
+            }
+            catch (Exception e) // for error handling database action and show in bootstrap alert
+            {
+                if (e.Message != null) { TempData["Error"] = e.InnerException.InnerException.Message; }
+                else{ TempData["Error"] = "Unknown"; }
+                    
+                return RedirectToAction("Index");
+            }
         }
 
         /// <summary>
@@ -105,7 +126,7 @@ namespace EmsMVC.Controllers
         /// </summary>
         private EmployeeDepartment db = new EmployeeDepartment();
         [HttpPost]
-        public ActionResult DeleteConfirm(string Ids,FormCollection formCollection)
+        public ActionResult DeleteConfirm(string Ids)//,FormCollection formCollection)
         {
             //char[] first = Ids.Take(1).ToArray();
             //if (first[0].ToString() == ",")
@@ -119,7 +140,7 @@ namespace EmsMVC.Controllers
                 //bool isSuccess = false;
                 try
                 {
-                    employeeManager.DeleteAll(int.Parse(ID));
+                    employeeManager.DeleteSelected(int.Parse(ID));
                     isSuccess = true;
                 }
                 catch (Exception ex)
@@ -127,12 +148,12 @@ namespace EmsMVC.Controllers
 
                 }
             }
-            return Json(new { success = isSuccess, rows=Ids });
+            return Json(new { success = isSuccess });
         }
 
-        public bool IsActive(int id, bool forceFullHit = false)
+        public bool IsAlert(int id, bool forceFullHit = false)
         {
-            return this.employeeManager.IsActive(id);
+            return this.employeeManager.IsAlert(id);
         }
     }
 }
