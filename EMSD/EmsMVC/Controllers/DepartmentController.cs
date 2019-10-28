@@ -45,7 +45,28 @@ namespace EmsMVC.Controllers
         [HttpPost]
         public ActionResult Create(DepartmentEntities departmentEntity)
         {
-            departmentManager.AddDepartment(departmentEntity);
+            try
+            {
+                departmentManager.AddDepartment(departmentEntity);
+                if (departmentEntity != null) { TempData["Success"] = "Department created successfully"; } // for alert
+                //return RedirectToAction("Index");
+            }
+            catch (Exception e) // for error handling database action and show in bootstrap alert
+            {
+                #region Print error message on Index page in Bootstrap alert(danger)
+                string msg = e.InnerException.InnerException.Message;
+                //if (e.Message != null) { TempData["Error"] = e.InnerException.InnerException.Message; }
+                //else { TempData["Error"] = "Unknown"; }
+                #endregion
+
+                //Using ModelState Object to check Server side Validations
+                if (msg.Contains("Violation of UNIQUE KEY constraint"))
+                {
+                    // ViewBag.UserEmailValidation = "User Email already exists. Please choose another Email.";
+                    ModelState.AddModelError("Code", "Department Code already exists. Please enter a different code.");
+                    return View(departmentEntity);
+                }
+            }
             return RedirectToAction("Index");
         }
 
@@ -58,26 +79,92 @@ namespace EmsMVC.Controllers
         // POST: Department/Edit/5
         [HttpPost]
         public ActionResult Edit(int id, DepartmentEntities departmentEntity)
+
         {
-            departmentManager.EditDepartment(id, departmentEntity);
+            try
+            {
+                departmentManager.EditDepartment(id, departmentEntity);
+                if (departmentEntity != null) { TempData["Update"] = "DepartmentEntity updated successfully"; } // for alert
+            }
+            catch (Exception e) // for error handling database action and show in bootstrap alert
+            {
+                #region Print error message on Index page in Bootstrap alert(danger)
+                //if (e.Message != null) { TempData["Error"] = e.InnerException.InnerException.Message; }
+                //else { TempData["Error"] = "Unknown"; }
+                //return RedirectToAction("Index");
+                #endregion
+
+                //Using ModelState Object to check Server side Validations
+                string msg = e.InnerException.InnerException.Message;
+                if (msg.Contains("Violation of UNIQUE KEY constraint"))
+                {
+                    // ViewBag.UserEmailValidation = "User Email already exists. Please choose another Email.";
+                    ModelState.AddModelError("Code", "Department Code already exists. Please enter a different code.");
+                    return View(departmentEntity);
+                }
+            }
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string Ids)//,FormCollection formCollection)
         {
+            string[] ids = Ids.Split(new char[] { ',' });
             bool isSuccess = false;
-            try
+            foreach (string ID in ids)
             {
-                departmentManager.DeleteDepartment(id);
-                isSuccess = true;
+                
+                try
+                {
+                    departmentManager.DeleteDepartment(int.Parse(ID));
+                    isSuccess = true;
+                }
+                catch (Exception e)
+                {
+                    try
+                    {
+                        if (ID == "")
+                        {
+                            TempData["Error"] = e.Message;// + "Select more than one row then click on 'DeleteAll' button to perform delete action.";
+                            break;
+                        }
+                        else if (e.Message != null)
+                        {
+                            String alertDelete = e.InnerException.InnerException.Message;
+                            TempData["Error"] = e.InnerException.InnerException.Message.Substring(0, alertDelete.IndexOf('.'));
+                            TempData["Error"] = alertDelete.Contains("The DELETE statement conflicted with the REFERENCE constraint ") ?
+                                "Department already in use can't be deleted" : "Error occured";
+                        }
+                        else { TempData["Error"] = "Unknown"; }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex.Message != null) { TempData["Error"] = e.Message + ex.Message; }
+                        break;
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-
-            }
-
-            return Json(new { success = isSuccess });
+            return Json(new { success = isSuccess, error = @TempData["Error"] });
         }
+
+        #region Delete single record in database using action method Delete(int id)
+        //public ActionResult Delete(int id)
+        //{
+        //    bool isSuccess = false;
+        //    try
+        //    {
+        //        departmentManager.DeleteDepartment(id);
+        //        isSuccess = true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (e.Message != null) { TempData["Error"] = e.InnerException.InnerException.Message; }
+        //        else { TempData["Error"] = "Unknown"; }
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return Json(new { success = isSuccess });
+        //}
+        #endregion
     }
 }

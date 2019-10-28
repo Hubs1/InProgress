@@ -117,12 +117,6 @@ namespace EmsBAL
             return employeeDelete;
         }
 
-        public bool IsAlert(int id)
-        {
-            var alert = this.GetEmployee(id) ?? new EmployeeEntities();
-            return alert.Status;
-        }
-
         //public Employee DeleteSelected(string eIds) {
         //    bool isSuccess = false;
         //    try

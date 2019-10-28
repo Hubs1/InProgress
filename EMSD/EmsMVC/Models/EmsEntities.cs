@@ -6,7 +6,7 @@ using System.Web;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net.Http;
+using System.Web.Mvc;
 
 namespace EmsEntities
 {
@@ -56,10 +56,8 @@ namespace EmsEntities
         [Required(ErrorMessage = "Please select your Department.")]
         public string Name { get; set; }
 
-        //public RemoteAttribute(string action, string controller, string areaName);
-
         [Required(ErrorMessage = "Please enter your Department Code.")]
-        //[Remote("CheckCode", "Department", ErrorMessage = "DepartmentCode already exists")] //[using System.Web.Mvc;]
+        [Remote("CheckCode", "Department", ErrorMessage = "DepartmentCode already exists")]
         [RegularExpression("^(DC|)[0-9]{3}$", ErrorMessage = "Enter Code in format: DC000 ")]
         public string Code { get; set; }
 

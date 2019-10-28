@@ -16,7 +16,7 @@ namespace EmsMVC.Controllers
         EmployeeManager employeeManager = new EmployeeManager();
         DepartmentManager departmentManager = new DepartmentManager();
 
-        #region Delete multiple records using checkbox
+        #region Code delete multiple records using checkbox
         //private EmployeeDepartment db = new EmployeeDepartment();
         //[HttpPost]
         //public ActionResult Index(FormCollection formCollection)
@@ -122,7 +122,7 @@ namespace EmsMVC.Controllers
         }
 
         /// <summary>
-        /// Delete selected checkboxes
+        /// Delete selected records using checkboxes
         /// </summary>
         private EmployeeDepartment db = new EmployeeDepartment();
         [HttpPost]
@@ -149,11 +149,6 @@ namespace EmsMVC.Controllers
                 }
             }
             return Json(new { success = isSuccess });
-        }
-
-        public bool IsAlert(int id, bool forceFullHit = false)
-        {
-            return this.employeeManager.IsAlert(id);
         }
     }
 }

@@ -58,10 +58,16 @@ namespace EmsBAL
         }
         public Department DeleteDepartment(int id)//,DepartmentEntities departmenteEntity
         {
-            Department departmentDelete = unitOfWork.DepartmentRepository.GetById(id);
-            unitOfWork.DepartmentRepository.Delete(departmentDelete);
-            unitOfWork.Save();
-            return departmentDelete;
+            try
+            {
+                Department departmentDelete = unitOfWork.DepartmentRepository.GetById(id);
+                unitOfWork.DepartmentRepository.Delete(departmentDelete);
+                unitOfWork.Save();
+                return departmentDelete;
+            }catch(Exception e)
+            {
+                throw(e);
+            }
         }
     }
 }
