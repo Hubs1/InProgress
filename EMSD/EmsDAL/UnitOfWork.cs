@@ -16,6 +16,8 @@ namespace EmsDAL
         private EmployeeDepartment objDb;// = new EmployeeDepartment();//Dbcontext
         private EmployeeRepository employeeRepository;
         private DepartmentRepository departmentRepository;
+
+        private CountryRepository countryRepository;
         public UnitOfWork()
         {
             objDb = new EmployeeDepartment();
@@ -44,6 +46,19 @@ namespace EmsDAL
                 return this.departmentRepository;
             }
         }
+        public CountryRepository CountryRepository
+        {
+            get
+            {
+                if (this.countryRepository == null)
+                {
+                    this.countryRepository = new CountryRepository(this.objDb);
+                }
+
+                return this.countryRepository;
+            }
+        }
+
         public void Save()
         {
             objDb.SaveChanges();

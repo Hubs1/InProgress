@@ -16,6 +16,8 @@ namespace EmsMVC.Controllers
         EmployeeManager employeeManager = new EmployeeManager();
         DepartmentManager departmentManager = new DepartmentManager();
 
+        CountryManager countryManager = new CountryManager();
+
         #region Code delete multiple records using checkbox
         //private EmployeeDepartment db = new EmployeeDepartment();
         //[HttpPost]
@@ -49,8 +51,14 @@ namespace EmsMVC.Controllers
             ViewBag.DepartmentList = new SelectList(departmentManager.AllDepartments(), "ID", "Name");
             var enumData = from Job j in Enum.GetValues(typeof(Job))
                            select new { id = (int)j, name = j.ToString() };
+
             ViewBag.JobList = new SelectList(enumData, "id", "name");
             ViewBag.Gender = employeeEntity.Gender.ToString();
+
+            var enumType = from Address a in Enum.GetValues(typeof(Address))
+                           select new { id = (int)a, name = a.ToString() };
+            ViewBag.AddressList = new SelectList(enumType, "id", "name");
+           
             return View();
         }
         // POST: Employee/Add
@@ -100,6 +108,12 @@ namespace EmsMVC.Controllers
             var enumData = from Job j in Enum.GetValues(typeof(Job))
                            select new { id = (int)j, name = j.ToString() };
             ViewBag.JobList = new SelectList(enumData, "id", "name");
+
+            var enumType = from Address a in Enum.GetValues(typeof(Address))
+                           select new { id = (int)a, name = a.ToString() };
+            ViewBag.AddressList = new SelectList(enumType, "id", "name");
+
+            ViewBag.CountryList = new SelectList(countryManager.Countries(), "Id", "Name");
             return View(employeeManager.GetEmployee(id));//Use for saved values show on page
 
         }
@@ -149,6 +163,11 @@ namespace EmsMVC.Controllers
                 }
             }
             return Json(new { success = isSuccess });
+        }
+        public PartialViewResult PartialResult()
+        {
+            ViewBag.CountryList = new SelectList(countryManager.Countries(), "Id", "Name");
+            return PartialView("_AddressFields");
         }
     }
 }

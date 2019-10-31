@@ -16,7 +16,7 @@
         @Html.Partial("_AddEdit")
 
         <div class="form-group">
-            <div class="col-md-offset-4 col-md-10">
+            <div class="col-md-offset-3 col-md-2">
                 <input type="submit" value="Create" class="btn btn-success" />
                 @Html.ActionLink("Cancel", "Index", "Employee", new { @class = "btn btn-warning" })
             </div>
@@ -25,4 +25,5 @@
 }
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/Custom/AddressCategory.js")
 }

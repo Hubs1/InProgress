@@ -30,11 +30,11 @@ namespace EmsBAL
                 employeeEntity.DepartmentName = employee.Department.Name;
                 employeeEntity.Salary = employee.Salary;
                 employeeEntity.Gender = employee.Gender;
-                //employeeEntity.Sex = employeeEntity.Gender == true ? "Male" : "Female";
-                if (employeeEntity.Gender == true)
-                    employeeEntity.Sex = "Male";
-                else
-                    employeeEntity.Sex = "Female";
+                employeeEntity.Sex = employeeEntity.Gender == true ? "Male" : "Female";
+                //if (employeeEntity.Gender == true)
+                //    employeeEntity.Sex = "Male";
+                //else
+                //    employeeEntity.Sex = "Female";
                 employeeEntity.JobType = employee.JobType;
                 if (employeeEntity.JobType == 0)
                     employeeEntity.JobName = "Full-Time";
@@ -45,6 +45,12 @@ namespace EmsBAL
                 else if (employeeEntity.JobType == 3)
                     employeeEntity.JobName = "Trainee";
                 employeeEntity.Active = employee.IsActive;
+                employeeEntity.AddressType = employee.AddressType;
+                if (employeeEntity.AddressType == 0)
+                    employeeEntity.category = 0;
+                else
+                    employeeEntity.category=Address.Residential;
+
                 lstEmployeeEntities.Add(employeeEntity);
             }
             return lstEmployeeEntities;
@@ -61,6 +67,12 @@ namespace EmsBAL
             employeeEntity.Gender = employee.Gender;
             employeeEntity.JobType = employee.JobType;
             employeeEntity.Active = employee.IsActive;
+            employeeEntity.AddressType = employee.AddressType;
+            employeeEntity.EmployerName = employee.EmployerName;
+            employeeEntity.Street = employee.Street;
+            employeeEntity.Landmark = employee.Landmark;
+            employeeEntity.City = employee.City;
+            employeeEntity.CountryId = employee.CountryId;
             return employeeEntity;
             throw new NotImplementedException();
         }
@@ -73,6 +85,12 @@ namespace EmsBAL
             employeeAdd.Gender = employeeEntity.Gender;
             employeeAdd.JobType = employeeEntity.JobType;
             employeeAdd.IsActive = employeeEntity.Active;
+            employeeAdd.AddressType = employeeEntity.AddressType;
+            employeeAdd.EmployerName = employeeEntity.EmployerName;
+            employeeAdd.Street = employeeEntity.Street;
+            employeeAdd.Landmark = employeeEntity.Landmark;
+            employeeAdd.City = employeeEntity.City;
+            employeeAdd.CountryId = employeeEntity.CountryId;
             unitOfWork.EmployeeRepository.Add(employeeAdd);
             unitOfWork.Save();
             return employeeAdd;
@@ -86,6 +104,12 @@ namespace EmsBAL
             employeeUpdate.Gender = employeeEntity.Gender;
             employeeUpdate.JobType = employeeEntity.JobType;
             employeeUpdate.IsActive = employeeEntity.Active;
+            employeeUpdate.AddressType = employeeEntity.AddressType;
+            employeeUpdate.EmployerName = employeeEntity.EmployerName;
+            employeeUpdate.Street = employeeEntity.Street;
+            employeeUpdate.Landmark = employeeEntity.Landmark;
+            employeeUpdate.City = employeeEntity.City;
+            employeeUpdate.CountryId = employeeEntity.CountryId;
             unitOfWork.EmployeeRepository.UpdateEmployee(employeeUpdate);            
             unitOfWork.Save();
             return employeeUpdate;

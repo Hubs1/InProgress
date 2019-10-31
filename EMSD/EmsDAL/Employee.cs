@@ -21,7 +21,14 @@ namespace EmsDAL
         public bool Gender { get; set; }
         public int JobType { get; set; }
         public bool IsActive { get; set; }
+        public Nullable<int> AddressType { get; set; }
+        public string EmployerName { get; set; }
+        public string Street { get; set; }
+        public string Landmark { get; set; }
+        public string City { get; set; }
+        public Nullable<int> CountryId { get; set; }
     
+        public virtual Country Country { get; set; }
         public virtual Department Department { get; set; }
     }
 }

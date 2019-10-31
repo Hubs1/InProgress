@@ -60,6 +60,15 @@
         @Html.ValidationMessageFor(model => model.Active, "", new { @class = "text-danger" })
     </div>
 </div>
-@*@section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-    }*@
+
+<div class="form-group">
+    @Html.LabelFor(model => model.AddressType, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.DropDownListFor(model => model.AddressType, (SelectList)@ViewBag.AddressList, "--Select--", new { @class = "form-control", id = "ddlPartial" })
+    </div>
+</div>
+
+<div id="partialDiv" class="hide">
+</div>
+
+

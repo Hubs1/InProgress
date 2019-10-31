@@ -14,7 +14,7 @@ namespace EmsEntities
     {
         public int EId { get; set; }
 
-        //[Required(ErrorMessage = "Please enter your name.")]
+        [Required(ErrorMessage = "Please enter your name.")]
         [Display(Name = "Your Name")]
         [StringLength(20)]
         public string Name { get; set; }
@@ -36,6 +36,7 @@ namespace EmsEntities
         public string JobName { get; set; }// display JobName on Index page
         public bool Active { get; set; }
         public bool Status { get; set; }
+        public Address category { get; set; }// display on Index page
 
         public enum Job:int
         {
@@ -48,6 +49,22 @@ namespace EmsEntities
             [Display(Name = "Trainee")]
             Temporary =3
         }
+        public enum Address
+        {
+            Official=0,
+            Residential
+        }
+        public Nullable<int> AddressType { get; set; }
+        [Required]
+        public string EmployerName { get; set; }
+        //[Required]
+        public string Street { get; set; }
+        //[Required]
+        public string Landmark { get; set; }
+        //[Required]
+        public string City { get; set; }
+        [Required(ErrorMessage = "Please select your Country.")]
+        public Nullable<int> CountryId { get; set; }
     }
     public class DepartmentEntities
     {
@@ -64,5 +81,13 @@ namespace EmsEntities
         public string Code { get; set; }
 
         public List<EmployeeEntities> EmployeeList;
+    }
+    /// <summary>
+    /// Adding dropdownList 
+    /// </summary>
+    public class CountryEntity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

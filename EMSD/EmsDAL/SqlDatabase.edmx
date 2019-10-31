@@ -16,13 +16,20 @@
           <Property Name="NewValues" Type="varchar(max)" />
           <Property Name="DateTime" Type="smalldatetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="40" Nullable="false" />
+        </EntityType>
         <EntityType Name="Department">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="Code" Type="varchar" MaxLength="5" />
+          <Property Name="Code" Type="varchar" MaxLength="5" Nullable="false" />
         </EntityType>
         <EntityType Name="Employee">
           <Key>
@@ -35,8 +42,26 @@
           <Property Name="Gender" Type="bit" Nullable="false" />
           <Property Name="JobType" Type="int" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="AddressType" Type="int" />
+          <Property Name="EmployerName" Type="varchar" MaxLength="50" />
+          <Property Name="Street" Type="varchar" MaxLength="50" />
+          <Property Name="Landmark" Type="varchar" MaxLength="50" />
+          <Property Name="City" Type="varchar" MaxLength="20" />
+          <Property Name="CountryId" Type="int" />
         </EntityType>
-        <Association Name="FK_Id">
+        <Association Name="FK_Country">
+          <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Employee">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Department">
           <End Role="Department" Type="Self.Department" Multiplicity="1" />
           <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
           <ReferentialConstraint>
@@ -80,9 +105,14 @@
         </Function>
         <EntityContainer Name="EmployeeDepartmentModelStoreContainer">
           <EntitySet Name="AuditLog" EntityType="Self.AuditLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Country" EntityType="Self.Country" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Id" Association="Self.FK_Id">
+          <AssociationSet Name="FK_Country" Association="Self.FK_Country">
+            <End Role="Country" EntitySet="Country" />
+            <End Role="Employee" EntitySet="Employee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Department" Association="Self.FK_Department">
             <End Role="Department" EntitySet="Department" />
             <End Role="Employee" EntitySet="Employee" />
           </AssociationSet>
@@ -124,12 +154,17 @@
           </FunctionImport>
           <EntitySet Name="AuditLogs" EntityType="EmployeeDepartmentModel.AuditLog" />
           <EntitySet Name="Departments" EntityType="EmployeeDepartmentModel.Department" />
+          <EntitySet Name="Countries" EntityType="EmployeeDepartmentModel.Country" />
           <EntitySet Name="Employees" EntityType="EmployeeDepartmentModel.Employee" />
-          <AssociationSet Name="FK_Id" Association="EmployeeDepartmentModel.FK_Id">
+          <AssociationSet Name="FK_Country" Association="EmployeeDepartmentModel.FK_Country">
+            <End Role="Country" EntitySet="Countries" />
+            <End Role="Employee" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Department" Association="EmployeeDepartmentModel.FK_Department">
             <End Role="Department" EntitySet="Departments" />
             <End Role="Employee" EntitySet="Employees" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="Id" />
@@ -147,8 +182,16 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Code" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Employees" Relationship="EmployeeDepartmentModel.FK_Id" FromRole="Department" ToRole="Employee" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Employees" Relationship="EmployeeDepartmentModel.FK_Department" FromRole="Department" ToRole="Employee" />
+        </EntityType>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Employees" Relationship="EmployeeDepartmentModel.FK_Country" FromRole="Country" ToRole="Employee" />
         </EntityType>
         <EntityType Name="Employee">
           <Key>
@@ -161,9 +204,28 @@
           <Property Name="Gender" Type="Boolean" Nullable="false" />
           <Property Name="JobType" Type="Int32" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Department" Relationship="EmployeeDepartmentModel.FK_Id" FromRole="Employee" ToRole="Department" />
+          <Property Name="AddressType" Type="Int32" />
+          <Property Name="EmployerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Street" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Landmark" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CountryId" Type="Int32" />
+          <NavigationProperty Name="Country" Relationship="EmployeeDepartmentModel.FK_Country" FromRole="Employee" ToRole="Country" />
+          <NavigationProperty Name="Department" Relationship="EmployeeDepartmentModel.FK_Department" FromRole="Employee" ToRole="Department" />
         </EntityType>
-        <Association Name="FK_Id">
+        <Association Name="FK_Country">
+          <End Type="EmployeeDepartmentModel.Country" Role="Country" Multiplicity="0..1" />
+          <End Type="EmployeeDepartmentModel.Employee" Role="Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Employee">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Department">
           <End Type="EmployeeDepartmentModel.Department" Role="Department" Multiplicity="1" />
           <End Type="EmployeeDepartmentModel.Employee" Role="Employee" Multiplicity="*" />
           <ReferentialConstraint>
@@ -175,7 +237,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -210,9 +272,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="EmployeeDepartmentModel.Country">
+              <MappingFragment StoreEntitySet="Country">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Employees">
             <EntityTypeMapping TypeName="EmployeeDepartmentModel.Employee">
               <MappingFragment StoreEntitySet="Employee">
+                <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Landmark" ColumnName="Landmark" />
+                <ScalarProperty Name="Street" ColumnName="Street" />
+                <ScalarProperty Name="EmployerName" ColumnName="EmployerName" />
+                <ScalarProperty Name="AddressType" ColumnName="AddressType" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="JobType" ColumnName="JobType" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
