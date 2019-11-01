@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
+using System.Web.Mvc;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,11 @@ namespace EmsEntities
 {
     public class EmployeeEntities
     {
+        public EmployeeEntities()
+        {
+            this.EId = 0;
+        }
+
         public int EId { get; set; }
 
         [Required(ErrorMessage = "Please enter your name.")]
@@ -24,7 +30,7 @@ namespace EmsEntities
         public int DepartmentId { get; set; }
         public string DepartmentName { get; set; }
 
-        public List<DepartmentEntities> DepartmentList; // DropDownListFor
+        public SelectList DepartmentList; // DropDownListFor
         [Required(ErrorMessage ="Enter your Salary")]//Using [Required] for custom message, Default Message - @Html.ValidationMessageFor()
         [Range(10000, 150000, ErrorMessage = "Salary between 10,000 to 1,50,000")]
         public int Salary { get; set; }
@@ -55,16 +61,7 @@ namespace EmsEntities
             Residential
         }
         public Nullable<int> AddressType { get; set; }
-        [Required]
-        public string EmployerName { get; set; }
-        //[Required]
-        public string Street { get; set; }
-        //[Required]
-        public string Landmark { get; set; }
-        //[Required]
-        public string City { get; set; }
-        [Required(ErrorMessage = "Please select your Country.")]
-        public Nullable<int> CountryId { get; set; }
+        public AddressEntity AddressFields { get; set; }
     }
     public class DepartmentEntities
     {
@@ -89,5 +86,18 @@ namespace EmsEntities
     {
         public int Id { get; set; }
         public string Name { get; set; }
+    }
+    public class AddressEntity
+    {
+        [Required]
+        public string EmployerName { get; set; }
+        //[Required]
+        public string Street { get; set; }
+        //[Required]
+        public string Landmark { get; set; }
+        //[Required]
+        public string City { get; set; }
+        [Required(ErrorMessage = "Please select your Country.")]
+        public Nullable<int> CountryId { get; set; }
     }
 }

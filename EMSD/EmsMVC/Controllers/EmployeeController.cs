@@ -6,8 +6,10 @@ using System.Web.Mvc;
 
 using EmsBAL;
 using EmsDAL;
+using EmsDAL.Repository;
 using EmsEntities;
 using static EmsEntities.EmployeeEntities;// for access enum Job
+using EmsMVC.Models;
 
 namespace EmsMVC.Controllers
 {
@@ -17,6 +19,8 @@ namespace EmsMVC.Controllers
         DepartmentManager departmentManager = new DepartmentManager();
 
         CountryManager countryManager = new CountryManager();
+
+        DropDownSelectList selectList=new DropDownSelectList();
 
         #region Code delete multiple records using checkbox
         //private EmployeeDepartment db = new EmployeeDepartment();
@@ -48,7 +52,10 @@ namespace EmsMVC.Controllers
         public ActionResult Add()
         {
             EmployeeEntities employeeEntity = new EmployeeEntities();
-            ViewBag.DepartmentList = new SelectList(departmentManager.AllDepartments(), "ID", "Name");
+            employeeEntity.DepartmentList = new SelectList(departmentManager.AllDepartments(), "ID", "Name");
+            //employeeEntity.DepartmentList = selectList.DepartmentList();
+
+            //ViewBag.DepartmentList = new SelectList(departmentManager.AllDepartments(), "ID", "Name");
             var enumData = from Job j in Enum.GetValues(typeof(Job))
                            select new { id = (int)j, name = j.ToString() };
 
@@ -58,8 +65,9 @@ namespace EmsMVC.Controllers
             var enumType = from Address a in Enum.GetValues(typeof(Address))
                            select new { id = (int)a, name = a.ToString() };
             ViewBag.AddressList = new SelectList(enumType, "id", "name");
-           
-            return View();
+
+
+            return View(employeeEntity);
         }
         // POST: Employee/Add
         [HttpPost]
@@ -74,8 +82,8 @@ namespace EmsMVC.Controllers
             }
             catch (Exception e) // for error handling database action and show in bootstrap alert
             {
-                //if (e.Message != null) { TempData["Error"] = e.Message; }
-                if (e.Message != null) { TempData["Error"] = e.InnerException.InnerException.Message; }
+                if (e.Message != null) { TempData["Error"] = e.Message; }
+                //if (e.Message != null) { TempData["Error"] = e.InnerException.InnerException.Message; }
                 else { TempData["Error"] = "Unknown"; }
 
                 return RedirectToAction("Index");
@@ -164,10 +172,16 @@ namespace EmsMVC.Controllers
             }
             return Json(new { success = isSuccess });
         }
-        public PartialViewResult PartialResult()
+        public PartialViewResult PartialResult(int employeeId)
         {
+            EmployeeEntities employeeEntities = new EmployeeEntities();
+            if (employeeId > 0)
+            {
+                employeeEntities = employeeManager.GetEmployee(employeeId);
+            }
+
             ViewBag.CountryList = new SelectList(countryManager.Countries(), "Id", "Name");
-            return PartialView("_AddressFields");
+            return PartialView("_AddressFields", employeeEntities.AddressFields);
         }
     }
 }
