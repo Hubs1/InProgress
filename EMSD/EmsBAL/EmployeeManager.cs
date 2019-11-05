@@ -35,14 +35,6 @@ namespace EmsBAL
                 employeeEntity.JobType = employee.JobType;
                 employeeEntity.JobName = employeeEntity.JobType == 0 ? "Full-Time" : employeeEntity.JobType == 1 ? "Part-Time" :
                     employeeEntity.JobType == 2 ? "Fixed" : "Trainee";
-                //if (employeeEntity.JobType == 0)
-                //    employeeEntity.JobName = "Full-Time";
-                //else if (employeeEntity.JobType == 1)
-                //    employeeEntity.JobName = "Part-Time";
-                //else if (employeeEntity.JobType == 2)
-                //    employeeEntity.JobName = "Fixed";
-                //else if (employeeEntity.JobType == 3)
-                //    employeeEntity.JobName = "Trainee";
                 employeeEntity.Active = employee.IsActive;
                 employeeEntity.AddressType = employee.AddressType;
                 if (employeeEntity.AddressType == 0)
@@ -68,7 +60,7 @@ namespace EmsBAL
             employeeEntity.Active = employee.IsActive;
             employeeEntity.AddressType = employee.AddressType;
 
-            if (employee.EmployerName != null){
+            if (employee.AddressType != null){
                 employeeEntity.AddressFields = new AddressEntity();
                 employeeEntity.AddressFields.EmployerName = employee.EmployerName;
                 employeeEntity.AddressFields.Street = employee.Street;
@@ -83,7 +75,6 @@ namespace EmsBAL
         public Employee AddEmployee(EmployeeEntities employeeEntity)
         {
             Employee employeeAdd = new Employee();
-            employeeEntity.AddressFields = new AddressEntity();
             employeeAdd.Name = employeeEntity.Name;
             employeeAdd.DepartmentId = employeeEntity.DepartmentId;
             employeeAdd.Salary = employeeEntity.Salary;
@@ -91,11 +82,7 @@ namespace EmsBAL
             employeeAdd.JobType = employeeEntity.JobType;
             employeeAdd.IsActive = employeeEntity.Active;
             employeeAdd.AddressType = employeeEntity.AddressType;
-            //employeeAdd.EmployerName = address.EmployerName;
-            //employeeAdd.Street = address.Street;
-            //employeeAdd.Landmark = address.Landmark;
-            //employeeAdd.City = address.City;
-            //employeeAdd.CountryId = address.CountryId;
+
             if (employeeAdd.AddressType != null)
             {
                 employeeAdd.EmployerName = employeeEntity.AddressFields.EmployerName;
@@ -140,42 +127,5 @@ namespace EmsBAL
             }
             return employeeDelete;
         }
-        public Employee DeleteEmployees(int Eid, Employee eEntity)//,EmployeeEntities employeeEntity
-        {
-            Employee employeeDelete = unitOfWork.EmployeeRepository.GetById(Eid);
-            List<Employee> lstEmployee = unitOfWork.EmployeeRepository.GetAll().ToList();
-            foreach (Employee employee in lstEmployee)
-            {
-                //Employee employeeDelete = unitOfWork.EmployeeRepository.GetById(Eid);
-                if (employeeDelete != null)
-                {
-                    unitOfWork.EmployeeRepository.Delete(employeeDelete);
-                    unitOfWork.Save();
-                }
-            }
-            lstEmployee.Add(eEntity);
-            return employeeDelete;
-        }
-
-        //public Employee DeleteSelected(string eIds) {
-        //    bool isSuccess = false;
-        //    try
-        //    {
-        //        employeeManager.DeleteEmployee(id);
-        //        isSuccess = true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //    return Json(new { success = isSuccess });
-        //}
-        public void DeleteSelected(int id) {
-            Employee deleteSelect = unitOfWork.EmployeeRepository.GetById(id);
-            unitOfWork.EmployeeRepository.Delete(deleteSelect);
-            unitOfWork.Save();
-                //return deleteAll;
-        }
-
     }
 }

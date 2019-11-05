@@ -44,7 +44,6 @@ else if (@TempData["Error"] != null)
                 <th>
                     <input type="checkbox" id="checkall" />
                 </th>
-                <th></th>
                 <th>
                     Name
                 </th>
@@ -138,13 +137,6 @@ else if (@TempData["Error"] != null)
                         return '<input type="checkbox" name="chk" id="chk" data-employee-chkid="' + data.EId + '">';
                     },
                 },
-                {
-                    "data": "EId",
-                    "title": "Serial",
-                    //render: function (data, type, row, meta) {
-                    //    return meta.row + meta.settings._iDisplayStart + 1;
-                    //}
-                },
                 { "data": "Name" },
                 { "data": "DepartmentName" },//DepartmentName is declare in EmsEntities
                 { "data": "Salary" },
@@ -219,15 +211,19 @@ else if (@TempData["Error"] != null)
 
         //Reference the CheckBoxes and insert the checked CheckBox value in Array.
         $("#tblEmployee input[type=checkbox]:checked").each(function () {
-            id = $(this).parent('td').closest('td').next().text();
+            //text = $(this).parent('td').closest('td').next().text();
+            //alert(text);
+            id = $(this).data('employee-chkid');
             selected.push(id);
 
         });
+
         //Display the selected CheckBox values.
         if (selected.length > 0) {
-            alert("Selected values: " + selected.join(","));
+            //alert("Selected values: " + selected.join(","));
             employeeIds = selected.join(",");
         }
+
         bootbox.confirm("Are you sure to delete records ?", function (result) {
             if (result) {
                 deleteEmployees(employeeIds);
@@ -301,22 +297,6 @@ else if (@TempData["Error"] != null)
             }
         });
     }
-        //// Handle form submission event 
-        //$('#buttonAlert').on('click', function (e) {
-        //    var form = this;
-
-        //    var rows_selected = table.column(0).checkboxes.selected();
-
-        //    // Iterate over all selected checkboxes
-        //    $.each(rows_selected, function (index, rowId) {
-        //        // Create a hidden element 
-        //        $(form).append(
-        //            $('<input>')
-        //                .attr('type', 'hidden')
-        //                .attr('name', 'id[]')
-        //                .val(rowId)
-        //        );
-        //    });
     </script>
 }
 

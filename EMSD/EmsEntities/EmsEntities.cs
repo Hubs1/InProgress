@@ -16,6 +16,7 @@ namespace EmsEntities
         public EmployeeEntities()
         {
             this.EId = 0;
+            Salary = 10000;
         }
 
         public int EId { get; set; }
@@ -29,7 +30,6 @@ namespace EmsEntities
         [Display(Name = "Department")]
         public int DepartmentId { get; set; }
         public string DepartmentName { get; set; }
-
         public SelectList DepartmentList; // DropDownListFor
         [Required(ErrorMessage ="Enter your Salary")]//Using [Required] for custom message, Default Message - @Html.ValidationMessageFor()
         [Range(10000, 150000, ErrorMessage = "Salary between 10,000 to 1,50,000")]
@@ -47,21 +47,34 @@ namespace EmsEntities
         public enum Job:int
         {
             [Display(Name ="Full-Time")]
-            FullTime=0,
+            FullTime,
             [Display(Name = "Part-Time")]
-            PartTime =1,
+            PartTime,
             [Display(Name = "Fixed")]
-            Permanent =2,
+            Permanent,
             [Display(Name = "Trainee")]
-            Temporary =3
+            Temporary,
         }
+        public SelectList JobList;
         public enum Address
         {
-            Official=0,
+            Official,
             Residential
         }
+        public SelectList AddressList;
+
+        [Display(Name = "Address")]
         public Nullable<int> AddressType { get; set; }
         public AddressEntity AddressFields { get; set; }
+
+        //[Required]
+        //public string EmployerName { get; set; }
+        //public string Street { get; set; }
+        //public string Landmark { get; set; }
+        //public string City { get; set; }
+        //[Required(ErrorMessage = "Please select your Country.")]
+        //public Nullable<int> CountryId { get; set; }
+        public SelectList CountryList;
     }
     public class DepartmentEntities
     {
@@ -91,11 +104,8 @@ namespace EmsEntities
     {
         [Required]
         public string EmployerName { get; set; }
-        //[Required]
         public string Street { get; set; }
-        //[Required]
         public string Landmark { get; set; }
-        //[Required]
         public string City { get; set; }
         [Required(ErrorMessage = "Please select your Country.")]
         public Nullable<int> CountryId { get; set; }
