@@ -63,7 +63,7 @@ else if (@TempData["Error"] != null)
                 <th>
                     Active
                 </th>
-                <th>
+                <th style="text-align:center">
                     Employee Names
                 </th>
                 <th>
@@ -137,7 +137,10 @@ else if (@TempData["Error"] != null)
                                     return '<span class="glyphicon glyphicon-remove" style="color:red;text-decoration:none;"></span>';
                             }
                         },
-                        { "data": "EmployeeNames" },
+                        {
+                            "data": "EmployeeNames",
+                            orderable: false
+                        },
                         {
                             data: null,
                             orderable: false,
