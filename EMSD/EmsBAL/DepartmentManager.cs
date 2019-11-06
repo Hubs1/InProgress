@@ -10,6 +10,7 @@ namespace EmsBAL
     public partial class DepartmentManager
     {
         private UnitOfWork unitOfWork;
+        private EmployeeDepartment employeeDepartment=new EmployeeDepartment();
         public DepartmentManager()
         {
             unitOfWork = new UnitOfWork();
@@ -22,9 +23,17 @@ namespace EmsBAL
             foreach (Department d in listDepartments)
             {
                 DepartmentEntities departmentEntity = new DepartmentEntities();
+                EmployeeEntities employeeEntities = new EmployeeEntities();
                 departmentEntity.Id = d.Id;
                 departmentEntity.Name = d.Name;
                 departmentEntity.Code = d.Code;
+                departmentEntity.Active = d.IsActive;
+
+                object[] array = new object[] { };//Using display comma separated those EmployeeNames which have same departments
+                array = employeeDepartment.Employees.Where(e => e.DepartmentId == d.Id).Select(e => e.Name).ToArray();
+                departmentEntity.EmployeeNames = string.Join(", ", array);
+
+                //departmentEntity.EmployeeNames = unitOfWork.EmployeeRepository.EmployeeNames(d.Id);
                 listDepartmentEntities.Add(departmentEntity);
             }
             return listDepartmentEntities;
@@ -36,6 +45,7 @@ namespace EmsBAL
             departmentEntity.Id = department.Id;
             departmentEntity.Name = department.Name;
             departmentEntity.Code = department.Code;
+            departmentEntity.Active = department.IsActive;
             return departmentEntity;
             throw new NotImplementedException();
         }
@@ -44,6 +54,7 @@ namespace EmsBAL
             Department departmentAdd = new Department();
             departmentAdd.Name = departmenteEntity.Name;
             departmentAdd.Code = departmenteEntity.Code;
+            departmentAdd.IsActive = departmenteEntity.Active;
             unitOfWork.DepartmentRepository.Add(departmentAdd);
             unitOfWork.Save();
             return departmentAdd;
@@ -53,6 +64,7 @@ namespace EmsBAL
             Department departmentUpdate = unitOfWork.DepartmentRepository.GetById(id);
             departmentUpdate.Name = departmenteEntity.Name;
             departmentUpdate.Code = departmenteEntity.Code;
+            departmentUpdate.IsActive = departmenteEntity.Active;
             unitOfWork.Save();
             return departmentUpdate;
         }
@@ -68,6 +80,10 @@ namespace EmsBAL
             {
                 throw(e);
             }
+        }
+        public IQueryable ActiveDepartments()
+        {
+            return unitOfWork.DepartmentRepository.ActiveDepartment();
         }
     }
 }

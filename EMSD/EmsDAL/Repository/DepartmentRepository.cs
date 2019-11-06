@@ -23,5 +23,9 @@ namespace EmsDAL.Repository
             Department departmentOld = _objDbContext.Departments.FirstOrDefault(x => x.Id == department.Id);
             _objDbContext.SaveChanges();
         }
+        public IQueryable ActiveDepartment()
+        {
+            return _objDbContext.Departments.Where(d => d.IsActive == true);
+        }
     }
 }

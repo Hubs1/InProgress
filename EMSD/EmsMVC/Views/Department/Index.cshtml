@@ -54,12 +54,17 @@ else if (@TempData["Error"] != null)
                 <th>
                     <input type="checkbox" id="checkall" />
                 </th>
-                <th></th>
                 <th>
                     Name
                 </th>
                 <th>
                     Code
+                </th>
+                <th>
+                    Active
+                </th>
+                <th>
+                    Employee Names
                 </th>
                 <th>
                     Actions
@@ -111,22 +116,35 @@ else if (@TempData["Error"] != null)
                             searchable: false,
                             className: 'text-center',
                             render: function (data, type, row) {
-                                return '<input type="checkbox" id="chk">';
+                                return '<input type="checkbox" id="chk" data-department-chkid="' + data.Id + '">';
                             }
                         },
-                        {
-                            "data": "Id",
-                            "title": "Serial",
-                        },
+                        //{
+                        //    "data": "Id",
+                        //    "title": "Serial",
+                        //},
                         { "data": "Name" },
                         { "data": "Code" },
+                        {
+                            "data": "Active",
+                            orderable: false,
+                            className: "text-center",
+                            render: function (data, type, row) {
+                                if (data === true) {
+                                    return '<span class="glyphicon glyphicon-ok" style="color:green;text-decoration:none;"></span>';
+                                }
+                                else
+                                    return '<span class="glyphicon glyphicon-remove" style="color:red;text-decoration:none;"></span>';
+                            }
+                        },
+                        { "data": "EmployeeNames" },
                         {
                             data: null,
                             orderable: false,
                             className: "text-center",
                             render: function (data, type, row) {
                                 return '<a id="lnkEditUser" data-user-id="' + data.Id + '" href="#" title="Edit User" class="glyphicon glyphicon-edit" style="text-decoration:none;"></a>' +
-                                    '<a id = "lnkDeleteUser" data-user-id="' + data.Id + '" href="#"  title="Delete User" class="glyphicon glyphicon-remove" style="padding-left:10px; text-decoration:none;"></a> ';
+                                    '<a id = "lnkDeleteUser" data-user-id="' + data.Id + '" href="#"  title="Delete User" class="glyphicon glyphicon-trash" style="padding-left:10px; text-decoration:none;"></a> ';
                             }
                         }
                     ],
@@ -189,7 +207,8 @@ else if (@TempData["Error"] != null)
 
                 //Reference the CheckBoxes and insert the checked CheckBox value in Array.
                 $("#tblDepartment input[type=checkbox]:checked").each(function () {
-                    id = $(this).parent('td').closest('td').next().text();
+                    //id = $(this).parent('td').closest('td').next().text();
+                    id = $(this).data('department-chkid');
                     selected.push(id);
 
                 });

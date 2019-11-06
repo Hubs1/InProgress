@@ -37,7 +37,8 @@ namespace EmsMVC.Controllers
         public ActionResult Add()
         {
             EmployeeEntities employeeEntity = new EmployeeEntities();
-            employeeEntity.DepartmentList = new SelectList(departmentManager.AllDepartments(), "Id", "Name");
+            //employeeEntity.DepartmentList = new SelectList(departmentManager.AllDepartments(), "Id", "Name"); //Show all departments in dropdown from table
+            employeeEntity.DepartmentList = new SelectList(departmentManager.ActiveDepartments(), "Id", "Name"); //Show active departments only.
 
             var enumType = from Job j in Enum.GetValues(typeof(Job))
                            select new { id = (int)j, name = j.ToString() };
@@ -78,7 +79,8 @@ namespace EmsMVC.Controllers
         {
             EmployeeEntities employeeEntity = new EmployeeEntities();
             employeeEntity = employeeManager.GetEmployee(id);
-            employeeEntity.DepartmentList = new SelectList(departmentManager.AllDepartments(), "ID", "Name");
+            //employeeEntity.DepartmentList = new SelectList(departmentManager.AllDepartments(), "ID", "Name");Show all departments in dropdown from table
+            employeeEntity.DepartmentList = new SelectList(departmentManager.AllDepartments().Where(d => d.Active == true), "Id", "Name");
 
             var enumType = from Job j in Enum.GetValues(typeof(Job))
                            select new { id = (int)j, name = j.ToString() };

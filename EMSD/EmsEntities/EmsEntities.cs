@@ -66,14 +66,6 @@ namespace EmsEntities
         [Display(Name = "Address")]
         public Nullable<int> AddressType { get; set; }
         public AddressEntity AddressFields { get; set; }
-
-        //[Required]
-        //public string EmployerName { get; set; }
-        //public string Street { get; set; }
-        //public string Landmark { get; set; }
-        //public string City { get; set; }
-        //[Required(ErrorMessage = "Please select your Country.")]
-        //public Nullable<int> CountryId { get; set; }
         public SelectList CountryList;
     }
     public class DepartmentEntities
@@ -89,6 +81,8 @@ namespace EmsEntities
         //[Remote("CheckCode", "Department", ErrorMessage = "DepartmentCode already exists")] //[using System.Web.Mvc;]
         [RegularExpression("^(DC|)[0-9]{3}$", ErrorMessage = "Enter Code in format: DC000 ")]
         public string Code { get; set; }
+        public bool Active { get; set; }
+        public string EmployeeNames { get; set; }
 
         public List<EmployeeEntities> EmployeeList;
     }

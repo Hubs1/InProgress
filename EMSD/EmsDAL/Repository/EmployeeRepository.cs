@@ -22,5 +22,13 @@ namespace EmsDAL.Repository
             Employee employeeOld = _objDbContext.Employees.FirstOrDefault(x => x.EId == employee.EId);
             _objDbContext.SaveChanges();
         }
+        //public String EmployeeNames(int id)
+        //{
+        //    List<Employee> employees = _objDbContext.Employees.Where(e => e.DepartmentId == id).ToList();
+        //    string names = string.Empty;
+        //    foreach (var item in employees)
+        //        names = names + item.Name + ",";
+        //    return names;
+        //}
     }
 }

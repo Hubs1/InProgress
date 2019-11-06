@@ -13,9 +13,10 @@ namespace EmsMVC.Controllers
     public class DepartmentController : Controller
     {
         DepartmentManager departmentManager = new DepartmentManager();
+        EmployeeManager employeeManager = new EmployeeManager();
         // GET: Department
         public ActionResult Index()
-        {   
+        {
             return View();
         }
 
@@ -146,6 +147,11 @@ namespace EmsMVC.Controllers
             }
             return Json(new { success = isSuccess, error = @TempData["Error"] });
         }
+
+        //public ActionResult GetNames()
+        //{
+        //    return Json(new { data = employeeManager.EmployeeNames() }, JsonRequestBehavior.AllowGet);
+        //}
 
         #region Delete single record in database using action method Delete(int id)
         //public ActionResult Delete(int id)
