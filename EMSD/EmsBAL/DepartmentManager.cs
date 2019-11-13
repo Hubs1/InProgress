@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using EmsDAL;
 using EmsEntities;
+using System.Text.RegularExpressions;
 
 namespace EmsBAL
 {
@@ -28,12 +29,13 @@ namespace EmsBAL
                 departmentEntity.Name = d.Name;
                 departmentEntity.Code = d.Code;
                 departmentEntity.Active = d.IsActive;
+                departmentEntity.EmployeeNames = string.Join(", ", d.Employees.Select(e => e.Name).ToArray()); //Get comma separated employee names
 
-                object[] array = new object[] { };//Using display comma separated those EmployeeNames which have same departments
-                array = employeeDepartment.Employees.Where(e => e.DepartmentId == d.Id).Select(e => e.Name).ToArray();
-                departmentEntity.EmployeeNames = string.Join(", ", array);
+                //object[] array = new object[] { };//Using display comma separated those EmployeeNames which have same departments
+                //array = employeeDepartment.Employees.Where(e => e.DepartmentId == d.Id).Select(e => e.Name).ToArray();
+                //departmentEntity.EmployeeNames = string.Join(", ", array);
 
-                //departmentEntity.EmployeeNames = unitOfWork.EmployeeRepository.EmployeeNames(d.Id);
+                //departmentEntity.EmployeeNames = unitOfWork.EmployeeRepository.EmployeeNames(d.Id);//Using display comma separated
                 listDepartmentEntities.Add(departmentEntity);
             }
             return listDepartmentEntities;
@@ -84,6 +86,30 @@ namespace EmsBAL
         public IQueryable ActiveDepartments()
         {
             return unitOfWork.DepartmentRepository.ActiveDepartment();
+        }
+
+        /// <summary>
+        /// This method returns the list of all departments
+        /// </summary>
+        /// <remarks>Author: Harri</remarks>
+        /// <param name="searchString">string to search</param>
+        /// <param name="sortField">field to sort</param>
+        /// <param name="sortDirection">sort direction</param>
+        /// <param name="start">start from</param>
+        /// <param name="length">length of records</param>
+        /// <returns>list of Departmenta</returns>
+        public List<Department> DepartmentsServer(string searchString, string sortField, string sortDirection, int start, int length)
+        {
+            List<Department> departments = new List<Department>();
+            using (UnitOfWork unitOfWork = new UnitOfWork())
+            {
+                var regex = new Regex(Regex.Escape(searchString), RegexOptions.IgnoreCase);
+
+                departments = unitOfWork.DepartmentRepository.Get(d => d.Name.Contains(searchString) || d.Code.Contains(searchString),
+                    unitOfWork.DepartmentRepository.GetOrderBy(sortField, sortDirection)).ToList();
+            }
+
+            return departments;
         }
     }
 }

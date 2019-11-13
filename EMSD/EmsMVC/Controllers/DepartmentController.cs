@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using EmsBAL;
 using EmsDAL;
 using EmsEntities;
+using System.Linq.Dynamic;
 
 namespace EmsMVC.Controllers
 {
@@ -148,10 +149,85 @@ namespace EmsMVC.Controllers
             return Json(new { success = isSuccess, error = @TempData["Error"] });
         }
 
-        //public ActionResult GetNames()
-        //{
-        //    return Json(new { data = employeeManager.EmployeeNames() }, JsonRequestBehavior.AllowGet);
-        //}
+        [HttpGet]
+        public ActionResult ServerSide()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult GetServerSide()
+        {
+            #region Server-side processing
+            /* (https://datatables.net/manual/server-side) */
+            int start = Convert.ToInt32(Request["start"]);
+            int length = Convert.ToInt32(Request["length"]);
+            string searchValue = Request["search[value]"];
+            int sortColumnIndex = Convert.ToInt32(Request["order[0][column]"]);
+            string sortColumName = Request["columns[" + sortColumnIndex + "][data]"];
+            string sortDirection = Request["order[0][dir]"];
+            #endregion
+
+            IEnumerable<DepartmentEntities> departmentRecords = departmentManager.AllDepartments();
+            int totalRows = departmentRecords.Count();
+
+            //filter
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                departmentRecords = departmentRecords.Where(d => d.Name.ToLower().Contains(searchValue.ToLower()) ||
+                  d.Code.ToLower().Contains(searchValue.ToLower()) || d.EmployeeNames.ToLower().Contains(searchValue.ToLower())).ToList();
+            }
+            int afterFilter = departmentRecords.Count();
+
+            //sorting
+            //Use DLL dynamic in queue in order to add this [System.Linq.Dynamic] from manage NUGET package to performing SQl operations
+            //departmentRecords = departmentRecords.OrderBy(sortColumnIndex + " " + sortDirection).ToList();//Toggle Sorting
+            
+            departmentRecords = departmentRecords.OrderBy(sortColumName + " " + sortDirection).ToList();//Perform sorting in dataTable
+
+            //paging
+            /* skip() skip 1st fewer records and
+             * take() we select next few records
+             * in 1st page skip 0 rows and take first 10 records and
+             * 2nd page skip first 10 records and selected next 10 records
+             */
+            departmentRecords = departmentRecords.Skip(start).Take(length).ToList();
+
+            // draw, recordsTotal,recordsFiltered [Returned Data]
+            return Json(new { data = departmentRecords, draw = Request["draw"], recordsTotal = totalRows, recordsFiltered = afterFilter }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult ServerSideCopy()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult GetServerSideCopy(string draw, int start = 0, int length = 10)
+        {
+            var searchString = Request["search[value]"];
+            var sortColumnIndex = Convert.ToInt32(Request["order[0][column]"]);
+            var sortDirection = Request["order[0][dir]"];
+            var sortField = Request["columns[" + sortColumnIndex + "][name]"];
+            if (sortField == string.Empty)
+            {
+                sortField = this.Request["columns[" + sortColumnIndex + "][data]"];
+            }
+            //int recordsCount = this.departmentManager.AllDepartments.GetAgents(false).ToList().Count;//agentsController
+            var filteredDepartments = this.departmentManager.DepartmentsServer(searchString, sortField, sortDirection, start, length);
+            IEnumerable<Department> departmentRecords = filteredDepartments.Skip(start).Take(length).ToList();
+
+            var result = from d in filteredDepartments
+                         select new DepartmentEntities
+                         {
+                             Name = d.Name,
+                             Code = d.Code,
+                             Active = d.IsActive,
+                             EmployeeNames = string.Join(", ", d.Employees.Select(e => e.Name).ToArray())
+                         };
+
+            return Json(new { data = departmentRecords, draw = Request["draw"], recordsTotal = filteredDepartments.Count, recordsFiltered = filteredDepartments.Count }, JsonRequestBehavior.AllowGet);
+        }
 
         #region Delete single record in database using action method Delete(int id)
         //public ActionResult Delete(int id)

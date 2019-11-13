@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="CountryManager.cs" />
     <Compile Include="DepartmentManager.cs" />
+    <Compile Include="DisplayManager.cs" />
     <Compile Include="EmployeeManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

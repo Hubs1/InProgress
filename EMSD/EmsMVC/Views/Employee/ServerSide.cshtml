@@ -1,0 +1,442 @@
+﻿@model IEnumerable<EmsEntities.EmployeeEntities>
+@{
+    ViewBag.Title = "Employee Server Side Records";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/Content/bootstrapDataTablesCss")
+
+<h2>Employee Records</h2>
+
+@if (@TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible" id="success">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close" style="color:red">&times;</a>
+        <p style="text-align:center"><strong>Success!</strong> @TempData["Success"]. </p>
+    </div>
+}
+else if (@TempData["Update"] != null)
+{
+    <div class="alert alert-success alert-dismissible" id="success">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close" style="color:red">&times;</a>
+        <p style="text-align:center"><strong>Success!</strong> @TempData["Update"]. </p>
+    </div>
+}
+else if (@TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible" id="danger">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <p style="text-align:center"><strong>OOPS!</strong> An error occurred while processing your request. <b>"@TempData["Error"]"</b> </p>
+    </div>
+}
+
+<div class="pull-left">
+    <button class="btn btn-danger" id="buttonAlert" style="display:none">DeleteAll</button>
+</div>
+<div class="pull-right">
+    @Html.ActionLink("Create New", "Add", "Employee", new { @class = "btn btn-primary" })
+</div>
+<br />
+<br />
+<div id="checkboxes">
+    <table class="table table-striped table-bordered" id="tblEmployee" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" id="checkall" />
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Department
+                </th>
+                <th>
+                    Salary
+                </th>
+                <th>
+                    Gender
+                </th>
+                <th>
+                    Job Type
+                </th>
+                <th>
+                    Active
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryDataTable")
+    @Scripts.Render("~/bundles/bootbox")
+    @Scripts.Render("~/bundles/bootstrapDataTables")
+    <script type="text/javascript">
+    $(document).ready(function () {
+        getEmployees();
+
+        // Grab a reference to the check all box:
+        var checkAllBox = $("#checkall");
+
+        //Set the default value of the global checkbox to true: checkAllBox.prop('checked', true);
+
+        // Attach the call to toggleChecked to the
+        // click event of the global checkbox:
+        checkAllBox.click(function () {
+            var status = checkAllBox.prop('checked');
+            toggleChecked(status);
+        });
+
+        alertClose();
+        //alertCheck();
+    });
+
+    $(document).on('click', '#lnkEditEmployee', function (e) {
+        window.location.href = '@Url.Action("Edit", "Employee")?id=' + $(this).data('employee-id');
+    })
+
+    $(document).on('click', '#lnkDeleteEmployee', function () {
+        var employeeId = $(this).data('employee-id');
+        bootbox.confirm("Are you sure to delete record ?", function (result) {
+            if (result) {
+                deleteEmployee(employeeId);
+            }
+        });
+    })
+
+    //var rows_selected = [];// Array holding selected row IDs
+    function getEmployees() {
+        var table = $('#tblEmployee').DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "pageLength": 10,
+            "destroy": true,
+            "ajax": { //ajax:to get or retrieve datas to populate HTML table
+                "url": "/Employee/GetServerSide",
+                "type": "POST",
+                "datatype": "json"
+            },
+            //"fixedHeader": true,
+            "columns": [ //columns: it tells what columns associated with each bind column
+                {
+                    //"data": "EId",
+                    data: null,
+                    targets: 0,
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-center',
+                    checkboxes: {
+                        'selectRow': true,
+                        'selectAllRender': '<div class="checkbox"><input type="checkbox" class="dt-checkboxes"><label></label></div>'
+                    },
+                    render: function (data, type, full, meta) {
+                        return '<input type="checkbox" name="chk" id="chk" data-employee-chkid="' + data.EId + '">';
+                    },
+                },
+                { "data": "Name" },
+                { "data": "DepartmentName" },//DepartmentName is declare in EmsEntities
+                { "data": "Salary" },
+                { "data": "Sex" },
+                { "data": "JobName" },//JobName is used for display names on Index page, it's declare in EmsEntities
+                {
+                    "data": "Active",
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        if (data === true) {
+                            return '<span class="glyphicon glyphicon-ok" style="color:green;text-decoration:none;"></span>';
+                        }
+                        else
+                            return '<span class="glyphicon glyphicon-remove" style="color:red;text-decoration:none;"></span>';
+                    }
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        return '<a id="lnkEditEmployee" data-employee-id="' + data.EId + '" href="#" title="Edit Employee" class="glyphicon glyphicon-edit" style="text-decoration:none;"></a>' +
+                            '<a id = "lnkDeleteEmployee" data-employee-id="' + data.EId + '" href="#"  title="Delete Employee" class="glyphicon glyphicon-trash" style="padding-left:10px; text-decoration:none;"></a> ';
+                    }
+                }
+            ],
+            'select': {
+                'style': 'multi'
+            },
+            'order': [
+                [1, 'asc']
+            ],
+        });
+    }
+
+    function deleteEmployee(employeeId) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Delete")',
+            data: JSON.stringify({ id: employeeId }), //use Id here given in Controller->[public ActionResult Delete(int id)]
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                if (data.success) {
+                    //alert("Success");
+                    bootbox.alert('Employee record deleted successfully.');
+                    getEmployees();
+                }
+                else {
+                    bootbox.alert('Some error occurred while processing your request.');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('hi ' + error);
+            }
+        });
+    }
+
+    function toggleChecked(status) {
+        $("#checkboxes input").each(function () { // toggle selection using <div id=checkboxes/>
+            // Set the checked status of each to match the
+            // checked status of the check all checkbox:
+            $(this).prop("checked", status);
+        });
+    }
+
+    $(document).on('click', '#buttonAlert', function () {
+        //Create an Array.
+        var selected = new Array();
+        var employeeIds; //Global variable
+
+        //Reference the CheckBoxes and insert the checked CheckBox value in Array.
+        $("#tblEmployee input[type=checkbox]:checked").each(function () {
+            //text = $(this).parent('td').closest('td').next().text();
+            //alert(text);
+            id = $(this).data('employee-chkid');
+            selected.push(id);
+
+        });
+
+        //Display the selected CheckBox values.
+        if (selected.length > 0) {
+            //alert("Selected values: " + selected.join(","));
+            employeeIds = selected.join(",");
+        }
+
+        bootbox.confirm("Are you sure to delete records ?", function (result) {
+            if (result) {
+                deleteEmployees(employeeIds);
+                buttonAlert.style.display = "none";
+                $("#checkall").prop("checked", false);
+            }
+        });
+    })
+
+    //Display no. of checkbox selected in alert
+    function chkbtn() {
+        var chkcount = $('tbody input[name="chk"]:checked').length;
+        //alert(chkcount);
+        if (chkcount > 1) {
+            buttonAlert.style.display = "block";
+            //$("#buttonAlert").hide(15000);
+            //$("#buttonAlert").fadeOut(50000);
+        }
+        else
+            buttonAlert.style.display = "none";
+    }
+
+    //Display DeleteAll button when checkbox(id=checkall) is checked or vice versa [top checkall]
+    $("#tblEmployee input:checkbox").on("change", function () {
+        var checkBox = document.getElementById("checkall");
+        if (checkBox == true)
+            buttonAlert.style.display = "block";
+        else
+            buttonAlert.style.display = "none";
+        chkbtn();
+    });
+
+    //Display DeleteAll button when checkbox count > 1
+    $(document).on('click', '#chk', function () {
+        chkbtn();
+    }) //$("#chk").click(function () { chkbtn(); })
+
+    function alertClose() {
+        window.setTimeout(function () {
+            $("#success").alert('close');
+        }, 10000);
+        window.setTimeout(function () {
+            $("#danger").alert('close');
+        }, 20000);
+    }
+
+    function deleteEmployees(employeeIds) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DeleteConfirm")',
+            data: JSON.stringify({ Ids: employeeIds }),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                if (data.success) {
+                    //alert("Success");
+                    bootbox.alert('Employee selected records deleted successfully.');
+                    getEmployees();
+                    success.style.display = "block";
+                    danger.style.display = "none";
+                    window.setTimeout(function () {
+                        $("#success").alert('close');
+                    }, 10000);
+                }
+                else {
+                    bootbox.alert('Some error occurred while processing your request.');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('hi ' + error);
+            }
+        });
+    }
+    </script>
+}
+
+@*<head>
+        <style>
+            table.dataTable tr th.select-checkbox.selected::after {
+                content: "✔";
+                margin-top: -11px;
+                margin-left: -4px;
+                text-align: center;
+                text-shadow: rgb(176, 190, 217) 1px 1px, rgb(176, 190, 217) -1px -1px, rgb(176, 190, 217) 1px -1px, rgb(176, 190, 217) -1px 1px;
+            }
+            h2{
+                font-family:'Times New Roman', Times, serif;
+                color:blueviolet;
+            }
+        </style>
+    </head>*@
+
+@*<div class="pull-left">
+    <label>ShowAlert/ DoubleClick: <input type="checkbox" id="checkAlert" onclick="alerts()"></label>
+    <label>ShowAlert: @Html.CheckBox("Active", new { @id = "checkAlert", @onclick = "alerts()" })</label>
+    <button class="btn btn-danger" id="buttonAlert" style="display:none" onclick="return confirm('Are you sure?')">DeleteAll</button>
+    @Html.ActionLink("DeleteAll", "Index", "Employee", new { @class = "btn btn-danger", @id = "buttonAlert", @onclick = "alerts()", @style = "display:none" })
+    </div>*@
+
+@*<div class="pull-right">
+        @Html.ActionLink("DeleteAll", "Delete", "Employee", new { @class = "btn btn-info", @id = "buttonAlert", @onclick = "alerts()" })
+    </div>*@
+
+@*$('#buttonAlert').click(function () {
+        var eAlert =@Html.Raw(Json.Encode(ViewBag.Save)); alert(eAlert);
+
+        //Create an Array.
+        //var selected = new Array();
+
+        //Reference the CheckBoxes and insert the checked CheckBox value in Array.
+            /*$("#tblEmployee input[type=checkbox]:checked").each(function () {
+            //id = $(this).prop('ids');
+            //id = $(this).attr('data-employee-chkid');
+            //id = $(this).data('employee-chkid');
+            //alert(id); selected.push(id);
+            //selected.push(text); // used for store names in array-> var selected = new Array();
+            //text = $(this).parent('td').closest('td').next().text(); // for store names when EId column not exist
+            //alert(text);
+            //selected.push(text); // used for store names in array-> var selected = new Array();
+            //selected.push(this.value);
+        });*/
+
+        //Display the selected CheckBox values.
+        /*if (selected.length > 0) {
+            alert("Selected values: " + selected.join(","));
+        }*/
+
+        // row delete only in Datatable
+        //var checked = jQuery('input:checkbox:checked').map(function () { return this.value; }).get();
+        //jQuery('input:checkbox:checked').parents("tr").remove(); // row delete only in Datatable
+
+        //var eAlert =ViewBag.employeeAlert; // not defined
+        //alert(eAlert);
+
+        /*
+        // Apply debug on JavaScript with "debugger" above the code
+        debugger
+        if (eAlert == 'True') {
+        //if (eAlert != null) {
+        //if (checkBox.checked == true) {
+        //if ($('#chk.checked' != true)) {
+            success.style.display = "block";
+            danger.style.display = "none";
+
+            //$("#success").fadeOut(5000);
+            //$("#success").slideUp(10000);
+            //$("#success").slideDown(5000).slideUp(5000); //comment this line for "slideDown,slideUp" - success.style.display = "block";
+
+            //Alter auto close in seconds
+            window.setTimeout(function () {
+                $("#success").alert('close');
+            }, 10000);
+        } else {
+            danger.style.display = "block";
+            success.style.display = "none";
+            $("#danger").slideUp(5000);
+            //$("#danger").fadeOut(4000);
+            //$("#danger").slideDown(5000).slideUp(5000); //comment - danger.style.display = "block";
+
+            ////Alter auto close in seconds
+            //window.setTimeout(function () {
+            //    $("#danger").alert('close');
+            //}, 5000);
+        }
+        */
+
+        /*//using alert with checkbox
+        var checkBox = document.getElementById("checkAlert");
+        if (checkBox.checked == true) {
+            success.style.display = "block";
+            danger.style.display = "none";
+            //Alter auto close in seconds
+            window.setTimeout(function () {
+                $("#success").alert('close');
+            }, 7000);
+        } else {
+            danger.style.display = "block";
+            success.style.display = "none";
+            $("#danger").slideUp(5000);
+            //Alter auto close in seconds
+            window.setTimeout(function () {
+                $("#danger").alert('close');
+            }, 5000);
+        }
+        */
+       });
+
+    /*
+    $(document).on('dblclick', '#checkAlert', function (e) {
+        if (ViewBag.Save != null)
+            $("success").show();
+        success.style.display = "none";
+        danger.style.display = "none";
+    })
+    */
+
+    function alertCheck() {
+        debugger
+        var eAlert =@Html.Raw(Json.Encode(TempData["Alert"]));
+        alert(eAlert);
+        if (eAlert != null) {
+            success.style.display = "block";
+            danger.style.display = "none";
+            window.setTimeout(function () {
+                $("#success").alert('close');
+            }, 10000);
+        }
+        else {
+            danger.style.display = "block";
+            success.style.display = "none";
+            window.setTimeout(function () {
+                $("#danger").alert('close');
+            }, 5000);
+        }
+    }
+
+*@

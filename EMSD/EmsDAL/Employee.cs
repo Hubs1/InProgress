@@ -18,8 +18,8 @@ namespace EmsDAL
         public string Name { get; set; }
         public int Salary { get; set; }
         public int DepartmentId { get; set; }
-        public bool Gender { get; set; }
-        public int JobType { get; set; }
+        public byte Gender { get; set; }
+        public byte JobType { get; set; }
         public bool IsActive { get; set; }
         public Nullable<int> AddressType { get; set; }
         public string EmployerName { get; set; }
@@ -27,6 +27,7 @@ namespace EmsDAL
         public string Landmark { get; set; }
         public string City { get; set; }
         public Nullable<int> CountryId { get; set; }
+        public System.DateTime DOB { get; set; }
     
         public virtual Country Country { get; set; }
         public virtual Department Department { get; set; }

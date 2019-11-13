@@ -9,14 +9,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 
+using static EmsEntities.RequiredIfAttribute;
+using System.ComponentModel;//Description Attribute
+
 namespace EmsEntities
 {
     public class EmployeeEntities
     {
         public EmployeeEntities()
         {
-            this.EId = 0;
+            //this.EId = 0;//not require initialisation EId=0 here. It's already add in [\Employee\_AddEdit.cshtml] - @Html.HiddenFor(m => m.EId)
+            Name = "Employee";
             Salary = 10000;
+            //Gender = true;
+            //Active = true;
+            //JobType = 4;
+            //AddressType = 1;
+            BirthDate = DateTime.Now;//Save current date and time.
+            //DOB=BirthDate.ToShortDateString();
+            DOB = BirthDate.ToString("dd/MMM/yyyy");//Use for only get date and display
         }
 
         public int EId { get; set; }
@@ -35,24 +46,29 @@ namespace EmsEntities
         [Range(10000, 150000, ErrorMessage = "Salary between 10,000 to 1,50,000")]
         public int Salary { get; set; }
         [Required(ErrorMessage = "Gender can't be empty")]
-        public bool Gender { get; set; }
+        public byte Gender { get; set; }
         public string Sex { get; set; }
         [Required(ErrorMessage = "Choose your JobType.")]
-        public int JobType { get; set; } // same name as SQL table column
+        public byte JobType { get; set; } // same name as SQL table column
         public string JobName { get; set; }// display JobName on Index page
         public bool Active { get; set; }
         public bool Status { get; set; }
-        public Address category { get; set; }// display on Index page
 
-        public enum Job:int
+        public enum Genders
         {
-            [Display(Name ="Full-Time")]
-            FullTime,
-            [Display(Name = "Part-Time")]
+            Male=1,
+            Female
+        }
+
+        public enum Job: int//System.ComponentModel
+        {
+            [Description("Full-Time")]
+            FullTime=1,
+            [Description("Part-Time")]
             PartTime,
-            [Display(Name = "Fixed")]
+            [Description("Fixed")]
             Permanent,
-            [Display(Name = "Trainee")]
+            [Description("Trainee")]
             Temporary,
         }
         public SelectList JobList;
@@ -64,9 +80,14 @@ namespace EmsEntities
         public SelectList AddressList;
 
         [Display(Name = "Address")]
+        [RequiredIf("Active",true,ErrorMessage ="Select Address")]
         public Nullable<int> AddressType { get; set; }
         public AddressEntity AddressFields { get; set; }
         public SelectList CountryList;
+        //[DataType(DataType.Date)]//Using Calender - If not use [DataType] then error msg occured- The field BirthDate must be a date.
+        public DateTime BirthDate { get; set; }
+        [Required(ErrorMessage = "Date of Birth is required.")]
+        public String DOB { get; set; }//use for date format only
     }
     public class DepartmentEntities
     {
@@ -94,14 +115,45 @@ namespace EmsEntities
         public int Id { get; set; }
         public string Name { get; set; }
     }
-    public class AddressEntity
+    public class AddressEntity:EmployeeEntities
     {
-        [Required]
+        public bool IsAddress { get; set; }
+        public int IsAddressType { get; set; }
+        public EmployeeEntities GetAddress { get; set; }
+        //[RequiredIf("IsAddress", true, ErrorMessage = "Please enter employer name.")]
+        [RequiredIf("GetAddress.AddressType", "0", ErrorMessage = "Employer Name is required")]
+        //[RequiredIf("IsAddressType", "0", ErrorMessage = "Please enter your Employer Name.")]
+        //[Required(ErrorMessage = "Please enter your Employer Name.")]
         public string EmployerName { get; set; }
         public string Street { get; set; }
         public string Landmark { get; set; }
         public string City { get; set; }
-        [Required(ErrorMessage = "Please select your Country.")]
+        //[RequiredIf("AddressType", 0, ErrorMessage = "Please select your Country.")]
         public Nullable<int> CountryId { get; set; }
+    }
+
+    public static class Enums//Get description of Enum Job
+    {
+        /// <summary>
+        /// Get Description of the enum variables
+        /// </summary>
+        /// <remarks>Author: Harri</remarks>
+        /// <param name="value">enum value</param>
+        /// <returns>description of enum passed</returns>
+        public static string Description(this Enum value)
+        {
+            var enumType = value.GetType();
+            var field = enumType.GetField(value.ToString());
+            var attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            return attributes.Length == 0
+                ? value.ToString()
+                : ((DescriptionAttribute)attributes[0]).Description;
+        }
+
+        public static string TodayDate()
+        {
+            var today = DateTime.Today;
+            return today.ToString();
+        }
     }
 }

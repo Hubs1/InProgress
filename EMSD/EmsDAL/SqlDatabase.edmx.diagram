@@ -8,7 +8,7 @@
         <EntityTypeShape EntityType="EmployeeDepartmentModel.AuditLog" Width="1.5" PointX="0.5" PointY="0.5" />
         <EntityTypeShape EntityType="EmployeeDepartmentModel.Department" Width="1.5" PointX="2.125" PointY="0.5" />
         <EntityTypeShape EntityType="EmployeeDepartmentModel.Country" Width="1.5" PointX="0.5" PointY="2.75" />
-        <EntityTypeShape EntityType="EmployeeDepartmentModel.Employee" Width="1.5" PointX="7.625" PointY="0.5" />
+        <EntityTypeShape EntityType="EmployeeDepartmentModel.Employee" Width="1.5" PointX="7.5" PointY="0.5" />
         <AssociationConnector Association="EmployeeDepartmentModel.FK_Country" />
         <AssociationConnector Association="EmployeeDepartmentModel.FK_Department" />
         </Diagram>

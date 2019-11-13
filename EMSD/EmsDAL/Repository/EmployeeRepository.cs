@@ -22,6 +22,8 @@ namespace EmsDAL.Repository
             Employee employeeOld = _objDbContext.Employees.FirstOrDefault(x => x.EId == employee.EId);
             _objDbContext.SaveChanges();
         }
+
+        #region EmployeeNames used for display comma separated values on Department
         //public String EmployeeNames(int id)
         //{
         //    List<Employee> employees = _objDbContext.Employees.Where(e => e.DepartmentId == id).ToList();
@@ -30,5 +32,6 @@ namespace EmsDAL.Repository
         //        names = names + item.Name + ",";
         //    return names;
         //}
+        #endregion
     }
 }

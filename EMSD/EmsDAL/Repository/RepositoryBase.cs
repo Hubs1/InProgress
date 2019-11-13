@@ -6,6 +6,7 @@ using System.Text;
 using System.Data.Entity;
 using System.Data;
 using System.Threading.Tasks;
+using System.Reflection;//PropertyInfo
 
 namespace EmsDAL
 {
@@ -87,6 +88,40 @@ namespace EmsDAL
         public T Get(Expression<Func<T, bool>> where)
         {
             return _objDbSet.Where(where).FirstOrDefault<T>();
+        }
+
+        /// <summary>
+        /// get generic method to order
+        /// </summary>
+        /// <remarks>Author: Henry Heeralal</remarks>
+        /// <param name="orderColumn">column against ordering</param>
+        /// <param name="orderType">ordering type</param>
+        /// <returns>result after ordering</returns>
+        public virtual Func<IQueryable<T>, IOrderedQueryable<T>> GetOrderBy(string orderColumn, string orderType)
+        {
+            Type typeQueryable = typeof(IQueryable<T>);
+            ParameterExpression argQueryable = Expression.Parameter(typeQueryable, "p");
+            var outerExpression = Expression.Lambda(argQueryable, argQueryable);
+            string[] props = orderColumn.Split('.');
+            IQueryable<T> query = new List<T>().AsQueryable<T>();
+            Type type = typeof(T);
+            ParameterExpression arg = Expression.Parameter(type, "x");
+
+            Expression expr = arg;
+            foreach (string prop in props)
+            {
+                PropertyInfo pi = type.GetProperty(prop, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                expr = Expression.Property(expr, pi);
+                type = pi.PropertyType;
+            }
+
+            LambdaExpression lambda = Expression.Lambda(expr, arg);
+            string methodName = orderType == "asc" ? "OrderBy" : "OrderByDescending";
+
+            MethodCallExpression resultExp =
+                Expression.Call(typeof(Queryable), methodName, new Type[] { typeof(T), type }, outerExpression.Body, Expression.Quote(lambda));
+            var finalLambda = Expression.Lambda(resultExp, argQueryable);
+            return (Func<IQueryable<T>, IOrderedQueryable<T>>)finalLambda.Compile();
         }
     }
 }

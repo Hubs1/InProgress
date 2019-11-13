@@ -74,7 +74,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EmsEntities.cs" />
+    <Compile Include="NameRequiredAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequiredIfAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

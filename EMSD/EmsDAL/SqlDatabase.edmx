@@ -31,6 +31,7 @@
           <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Code" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Employee">
           <Key>
@@ -40,8 +41,8 @@
           <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Salary" Type="int" Nullable="false" />
           <Property Name="DepartmentId" Type="int" Nullable="false" />
-          <Property Name="Gender" Type="bit" Nullable="false" />
-          <Property Name="JobType" Type="int" Nullable="false" />
+          <Property Name="Gender" Type="tinyint" Nullable="false" />
+          <Property Name="JobType" Type="tinyint" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="AddressType" Type="int" />
           <Property Name="EmployerName" Type="varchar" MaxLength="50" />
@@ -49,6 +50,7 @@
           <Property Name="Landmark" Type="varchar" MaxLength="50" />
           <Property Name="City" Type="varchar" MaxLength="20" />
           <Property Name="CountryId" Type="int" />
+          <Property Name="DOB" Type="date" Nullable="false" />
         </EntityType>
         <Association Name="FK_Country">
           <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
@@ -184,8 +186,9 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Code" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Employees" Relationship="EmployeeDepartmentModel.FK_Department" FromRole="Department" ToRole="Employee" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Employees" Relationship="EmployeeDepartmentModel.FK_Department" FromRole="Department" ToRole="Employee" />
         </EntityType>
         <EntityType Name="Country">
           <Key>
@@ -203,8 +206,8 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Salary" Type="Int32" Nullable="false" />
           <Property Name="DepartmentId" Type="Int32" Nullable="false" />
-          <Property Name="Gender" Type="Boolean" Nullable="false" />
-          <Property Name="JobType" Type="Int32" Nullable="false" />
+          <Property Name="Gender" Type="Byte" Nullable="false" />
+          <Property Name="JobType" Type="Byte" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="AddressType" Type="Int32" />
           <Property Name="EmployerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -214,6 +217,7 @@
           <Property Name="CountryId" Type="Int32" />
           <NavigationProperty Name="Country" Relationship="EmployeeDepartmentModel.FK_Country" FromRole="Employee" ToRole="Country" />
           <NavigationProperty Name="Department" Relationship="EmployeeDepartmentModel.FK_Department" FromRole="Employee" ToRole="Department" />
+          <Property Name="DOB" Type="DateTime" Nullable="false" Precision="0" />
         </EntityType>
         <Association Name="FK_Country">
           <End Type="EmployeeDepartmentModel.Country" Role="Country" Multiplicity="0..1" />
@@ -268,6 +272,7 @@
           <EntitySetMapping Name="Departments">
             <EntityTypeMapping TypeName="EmployeeDepartmentModel.Department">
               <MappingFragment StoreEntitySet="Department">
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -286,6 +291,7 @@
           <EntitySetMapping Name="Employees">
             <EntityTypeMapping TypeName="EmployeeDepartmentModel.Employee">
               <MappingFragment StoreEntitySet="Employee">
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
                 <ScalarProperty Name="CountryId" ColumnName="CountryId" />
                 <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="Landmark" ColumnName="Landmark" />

@@ -6,87 +6,33 @@ using System.Web.Mvc;
 using EmsBAL;
 using EmsDAL;
 using EmsEntities;
+using static EmsEntities.EmployeeEntities;// for access enums
+using EmsMVC.Controllers;
 
 namespace EmsMVC.Controllers
 {
     public class DisplayController : Controller
     {
+        DisplayManager displayManager = new DisplayManager();
+        
         // GET: Display
         public ActionResult Index()
         {
             return View();
         }
-
-        // GET: Display/Details/5
-        public ActionResult Details(int id)
+        // GET: Display/EmployeeRecords
+        public ActionResult GetEmployees()
         {
-            return View();
+            EmployeeEntities employeeEntity = new EmployeeEntities();
+            var enumType = from Job j in Enum.GetValues(typeof(Job))
+                           select new { id = (int)j, name = j.ToString() };
+            employeeEntity.JobList = new SelectList(enumType, "id", "name");
+            return Json(new { data = displayManager.AllEmployees() }, JsonRequestBehavior.AllowGet);
         }
-
-        // GET: Display/Create
-        public ActionResult Create()
+        // GET: Display/DepartmentRecords
+        public ActionResult GetDepartments()
         {
-            return View();
-        }
-
-        // POST: Display/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Display/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Display/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Display/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Display/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            return Json(new { data = displayManager.AllDepartments() }, JsonRequestBehavior.AllowGet);
+        }        
     }
 }

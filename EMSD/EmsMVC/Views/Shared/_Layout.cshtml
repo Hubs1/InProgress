@@ -16,12 +16,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("EMSD", "Index", "Employee", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("EMSD", "Index", "Display", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Employee", "Index", "Employee")</li>
                     <li>@Html.ActionLink("Department", "Index", "Department")</li>
+                    <li>@Html.ActionLink("EmployeeServer", "ServerSide", "Employee")</li>
+                    <li>@Html.ActionLink("DepartmentServer", "ServerSide", "Department")</li>
                 </ul>
             </div>
         </div>

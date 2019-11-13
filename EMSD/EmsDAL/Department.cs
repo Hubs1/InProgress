@@ -24,6 +24,7 @@ namespace EmsDAL
         public string Name { get; set; }
         public string Code { get; set; }
         public bool IsActive { get; set; }
+        public System.DateTime CreatedOn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Employee> Employees { get; set; }

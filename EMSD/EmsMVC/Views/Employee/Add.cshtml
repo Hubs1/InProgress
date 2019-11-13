@@ -23,7 +23,49 @@
         </div>
     </div>
 }
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/Custom/AddressCategory.js")
+    @Scripts.Render("~/Scripts/Custom/RequiredIf.js")
+
+    @*1. Apply Bootstrap-Datepicker Plugin *@
+
+    <!-- Include jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Include Date Range Picker -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+
+    <script>
+        $(function () {
+            $('#DOB').datepicker({
+                format: 'dd-M-yyyy',//formatting selected date in [01-Nov-2019] format.
+                todayHighlight: true,
+                autoclose: true
+            });
+        });
+    </script>
+    @* Apply Bootstrap-Datepicker Plugin *@
+
 }
+
+
+@*Apply jqueryUI date picker calender image
+        Add jquery.UI.combined from nuGet to access datePicker
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
+        <script type="text/javascript">
+            $(function () {
+                $("#SelectedDate").datepicker({//jQuery UI DatePicker (Calendar)
+                    //$("#BirthDate").datepicker({
+                    showOn: 'button',
+                    buttonImageOnly: true,
+                    buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif"
+                });
+            });
+        </script>
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+Apply jquery date picker calender image*@

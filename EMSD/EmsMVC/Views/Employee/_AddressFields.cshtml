@@ -1,17 +1,18 @@
 ﻿@model EmsEntities.EmployeeEntities
 @Html.AntiForgeryToken()
-
+@*@Html.HiddenFor(m => m.AddressFields.IsAddress)*@
+@*@Html.ValidationSummary(false, "", new { @class = "text-danger" })*@
 @if (Model.AddressType == 0)
 {
-<div class="form-group" id="officialName">
-    @Html.LabelFor(model => model.AddressFields.EmployerName, htmlAttributes: new { @class = "control-label col-md-2" })
-    <div class="col-md-10">
-        @Html.EditorFor(model => model.AddressFields.EmployerName, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.AddressFields.EmployerName, "", new { @class = "text-danger" })
+    <div class="form-group" id="officialName">
+        @Html.LabelFor(model => model.AddressFields.EmployerName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.AddressFields.EmployerName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.AddressFields.EmployerName, "Employer Name is required for Official.", new { @class = "text-danger" })
+        </div>
     </div>
-</div>
 }
-
+@*Employer Name is required for Official.*@
 <div class="form-group">
     @Html.LabelFor(model => model.AddressFields.Street, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
