@@ -28,6 +28,8 @@ namespace EmsDAL
         public string City { get; set; }
         public Nullable<int> CountryId { get; set; }
         public System.DateTime DOB { get; set; }
+        public System.DateTime CreatedOn { get; set; }
+        public Nullable<System.DateTime> UpdatedOn { get; set; }
     
         public virtual Country Country { get; set; }
         public virtual Department Department { get; set; }

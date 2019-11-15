@@ -39,6 +39,7 @@
           </Key>
           <Property Name="EId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="DOB" Type="date" Nullable="false" />
           <Property Name="Salary" Type="int" Nullable="false" />
           <Property Name="DepartmentId" Type="int" Nullable="false" />
           <Property Name="Gender" Type="tinyint" Nullable="false" />
@@ -50,7 +51,8 @@
           <Property Name="Landmark" Type="varchar" MaxLength="50" />
           <Property Name="City" Type="varchar" MaxLength="20" />
           <Property Name="CountryId" Type="int" />
-          <Property Name="DOB" Type="date" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="UpdatedOn" Type="datetime2" Precision="7" />
         </EntityType>
         <Association Name="FK_Country">
           <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
@@ -218,6 +220,8 @@
           <NavigationProperty Name="Country" Relationship="EmployeeDepartmentModel.FK_Country" FromRole="Employee" ToRole="Country" />
           <NavigationProperty Name="Department" Relationship="EmployeeDepartmentModel.FK_Department" FromRole="Employee" ToRole="Department" />
           <Property Name="DOB" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="UpdatedOn" Type="DateTime" Precision="7" />
         </EntityType>
         <Association Name="FK_Country">
           <End Type="EmployeeDepartmentModel.Country" Role="Country" Multiplicity="0..1" />
@@ -291,6 +295,8 @@
           <EntitySetMapping Name="Employees">
             <EntityTypeMapping TypeName="EmployeeDepartmentModel.Employee">
               <MappingFragment StoreEntitySet="Employee">
+                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="DOB" ColumnName="DOB" />
                 <ScalarProperty Name="CountryId" ColumnName="CountryId" />
                 <ScalarProperty Name="City" ColumnName="City" />

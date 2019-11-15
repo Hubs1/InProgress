@@ -66,6 +66,12 @@ else if (@TempData["Error"] != null)
                     Active
                 </th>
                 <th>
+                    Creation Date
+                </th>
+                <th>
+                    Updation Date
+                </th>
+                <th>
                     Actions
                 </th>
             </tr>
@@ -157,6 +163,18 @@ else if (@TempData["Error"] != null)
                         else
                             return '<span class="glyphicon glyphicon-remove" style="color:red;text-decoration:none;"></span>';
                     }
+                },
+                {
+                    "data": "SubmitOn",
+                    //type: 'datetime',
+                    //"sType": "date-uk",
+                    //def: function () { return new Date(); },
+                    //format: 'M/D/YYYY',
+                    //fieldInfo: 'US style m/d/y format'
+                },
+                {
+                    "data": "EditOn",
+                    "date":"dd/mm/yy"
                 },
                 {
                     data: null,

@@ -39,6 +39,13 @@ namespace EmsBAL
                 employeeEntity.Active = employee.IsActive;
                 employeeEntity.AddressType = employee.AddressType;
                 employeeEntity.DOB = employee.DOB.ToString("MMM dd, yyyy");//Use for display this format [Jan 01, 2019] Date of Birth on employee Index.cshtml [format:"dd-MMMM-yyyy"]
+
+                //var insert = employee.CreatedOn.ToString("dd MMMM yyyy, HH:mm");
+                //employeeEntity.SubmitOn = Convert.ToDateTime(insert);
+                employeeEntity.SubmitOn = employee.CreatedOn.ToString("dd MMM yyyy, HH:mm"); //("dd.M.yyy, hh:mm:ss tt") / ("MMM dd, yyy, hh:mm:ss tt");
+
+                if(employee.UpdatedOn !=null)//Remove exception {"Nullable object must have a value."} System.InvalidOperationException
+                employeeEntity.EditOn =  employee.UpdatedOn.Value.ToString("dd MMM yyyy, HH:mm"); //("dddd, dd MMMM yyyy HH:mm:ss"); *[.Value] used for removing error of Nullable
                 lstEmployeeEntities.Add(employeeEntity);
             }
             return lstEmployeeEntities;
@@ -56,8 +63,8 @@ namespace EmsBAL
             employeeEntity.JobType = employee.JobType;
             employeeEntity.Active = employee.IsActive;
             employeeEntity.AddressType = employee.AddressType;
-
-            if (employee.AddressType != null){
+            if (employee.AddressType != null)
+            {
                 employeeEntity.AddressFields = new AddressEntity();
                 employeeEntity.AddressFields.EmployerName = employee.EmployerName;
                 employeeEntity.AddressFields.Street = employee.Street;
@@ -65,8 +72,6 @@ namespace EmsBAL
                 employeeEntity.AddressFields.City = employee.City;
                 employeeEntity.AddressFields.CountryId = employee.CountryId;
             }
-
-            //employeeEntity.BirthDate = employee.DOB;
             employeeEntity.DOB = employee.DOB.ToString("dd-MMM-yyyy");//convert date to string from database and store in [DOB]entity
             return employeeEntity;
             throw new NotImplementedException();
@@ -90,14 +95,14 @@ namespace EmsBAL
                 employeeAdd.City = employeeEntity.AddressFields.City;
                 employeeAdd.CountryId = employeeEntity.AddressFields.CountryId;
             }
-
-            //employeeAdd.DOB = employeeEntity.BirthDate;
+            
             employeeAdd.DOB = Convert.ToDateTime(employeeEntity.DOB);//convert string to date from [DOB]entity] & store in database
+            employeeAdd.CreatedOn = DateTime.Now;//insert current datetime in database when record create
             unitOfWork.EmployeeRepository.Add(employeeAdd);
             unitOfWork.Save();
             return employeeAdd;
         }
-        public Employee EditEmployee(int id,EmployeeEntities employeeEntity)
+        public Employee EditEmployee(int id, EmployeeEntities employeeEntity)
         {
             Employee employeeUpdate = unitOfWork.EmployeeRepository.GetById(id);
             employeeUpdate.Name = employeeEntity.Name;
@@ -107,7 +112,7 @@ namespace EmsBAL
             employeeUpdate.JobType = employeeEntity.JobType;
             employeeUpdate.IsActive = employeeEntity.Active;
             employeeUpdate.AddressType = employeeEntity.AddressType;
-            if(employeeUpdate.AddressType != null)
+            if (employeeUpdate.AddressType != null)
             {
                 employeeUpdate.EmployerName = employeeEntity.AddressFields.EmployerName;
                 employeeUpdate.Street = employeeEntity.AddressFields.Street;
@@ -117,6 +122,7 @@ namespace EmsBAL
             }
             //employeeUpdate.DOB = employeeEntity.BirthDate;
             employeeUpdate.DOB = Convert.ToDateTime(employeeEntity.DOB);//convert string to date from [DOB]entity] & store in database to UPDATE
+            employeeUpdate.UpdatedOn = DateTime.Now; //insert current datetime or updated datetime in database
             unitOfWork.EmployeeRepository.UpdateEmployee(employeeUpdate);
             unitOfWork.Save();
             return employeeUpdate;
@@ -124,7 +130,7 @@ namespace EmsBAL
         public Employee DeleteEmployee(int Eid)//,EmployeeEntities employeeEntity
         {
             Employee employeeDelete = unitOfWork.EmployeeRepository.GetById(Eid);
-            if(employeeDelete!=null)
+            if (employeeDelete != null)
             {
                 unitOfWork.EmployeeRepository.Delete(employeeDelete);
                 unitOfWork.Save();
@@ -132,8 +138,9 @@ namespace EmsBAL
             return employeeDelete;
         }
 
+        #region ServerSide using EmployeeRepository.Get() to get list of employees from database
         /// <summary>
-        /// This method returns the list of all employees from database
+        /// This method returns the list of all employees from database ServerSide
         /// </summary>
         /// <remarks>Author: Harri</remarks>
         /// <param name="searchString">string to search</param>
@@ -174,5 +181,6 @@ namespace EmsBAL
                                      e.JobType == 3 ? Job.Permanent.Description() : Job.Temporary.Description(),*/
             return employeeResult.ToList();//return EmployeeEntities list of displayEmployees(10) records
         }
+        #endregion
     }
 }

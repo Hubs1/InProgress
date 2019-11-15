@@ -165,22 +165,15 @@ namespace EmsMVC.Controllers
         {
             EmployeeEntities employeeEntities = new EmployeeEntities();
             AddressEntity addressEntity = new AddressEntity();
-
-            if (employeeId > 0)
+            if (employeeId != 0)
             {
-                employeeEntities = employeeManager.GetEmployee(employeeId);
+                if (addressTypeId >= 0) //employeeId > 0 || 
+                {
+                    employeeEntities = employeeManager.GetEmployee(employeeId);
+                }
             }
 
             employeeEntities.AddressType = addressTypeId;
-
-            if (addressTypeId == 0)
-            {
-                employeeEntities.AddressFields = new AddressEntity();
-                //employeeEntities.AddressFields.IsAddressType = addressTypeId;
-                //employeeEntities.AddressFields.IsAddress = true;
-                //addressEntity.IsAddress = addressTypeId == 0 ? true : false;
-                //employeeEntities.AddressFields.IsAddress = true;
-            }
             employeeEntities.CountryList = new SelectList(countryManager.Countries(), "Id", "Name");
             return PartialView("_AddressFields", employeeEntities);
         }

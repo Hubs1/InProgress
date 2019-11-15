@@ -1,7 +1,9 @@
 ﻿@model EmsEntities.EmployeeEntities
 @Html.AntiForgeryToken()
+
 @*@Html.HiddenFor(m => m.AddressFields.IsAddress)*@
 @*@Html.ValidationSummary(false, "", new { @class = "text-danger" })*@
+
 @if (Model.AddressType == 0)
 {
     <div class="form-group" id="officialName">
@@ -13,6 +15,7 @@
     </div>
 }
 @*Employer Name is required for Official.*@
+
 <div class="form-group">
     @Html.LabelFor(model => model.AddressFields.Street, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">

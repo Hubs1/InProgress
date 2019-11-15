@@ -26,8 +26,8 @@ namespace EmsEntities
             //JobType = 4;
             //AddressType = 1;
             BirthDate = DateTime.Now;//Save current date and time.
-            //DOB=BirthDate.ToShortDateString();
-            DOB = BirthDate.ToString("dd/MMM/yyyy");//Use for only get date and display
+            //Set current date in DOB / BirthDate
+            DOB = BirthDate.ToString("dd/MMM/yyyy");//Use for get formated date only and display
         }
 
         public int EId { get; set; }
@@ -42,7 +42,7 @@ namespace EmsEntities
         public int DepartmentId { get; set; }
         public string DepartmentName { get; set; }
         public SelectList DepartmentList; // DropDownListFor
-        [Required(ErrorMessage ="Enter your Salary")]//Using [Required] for custom message, Default Message - @Html.ValidationMessageFor()
+        [Required(ErrorMessage = "Enter your Salary")]//Using [Required] for custom message, Default Message - @Html.ValidationMessageFor()
         [Range(10000, 150000, ErrorMessage = "Salary between 10,000 to 1,50,000")]
         public int Salary { get; set; }
         [Required(ErrorMessage = "Gender can't be empty")]
@@ -56,14 +56,14 @@ namespace EmsEntities
 
         public enum Genders
         {
-            Male=1,
+            Male = 1,
             Female
         }
 
-        public enum Job: int//System.ComponentModel
+        public enum Job : int//System.ComponentModel
         {
             [Description("Full-Time")]
-            FullTime=1,
+            FullTime = 1,
             [Description("Part-Time")]
             PartTime,
             [Description("Fixed")]
@@ -80,7 +80,7 @@ namespace EmsEntities
         public SelectList AddressList;
 
         [Display(Name = "Address")]
-        [RequiredIf("Active",true,ErrorMessage ="Select Address")]
+        [RequiredIf("Active", true, ErrorMessage = "Select Address")]
         public Nullable<int> AddressType { get; set; }
         public AddressEntity AddressFields { get; set; }
         public SelectList CountryList;
@@ -88,6 +88,8 @@ namespace EmsEntities
         public DateTime BirthDate { get; set; }
         [Required(ErrorMessage = "Date of Birth is required.")]
         public String DOB { get; set; }//use for date format only
+        public string SubmitOn { get; set; }
+        public string EditOn { get; set; } // using [?] for creating nullable "DateTime" variable
     }
     public class DepartmentEntities
     {
@@ -115,7 +117,7 @@ namespace EmsEntities
         public int Id { get; set; }
         public string Name { get; set; }
     }
-    public class AddressEntity:EmployeeEntities
+    public class AddressEntity : EmployeeEntities
     {
         public bool IsAddress { get; set; }
         public int IsAddressType { get; set; }
@@ -131,7 +133,7 @@ namespace EmsEntities
         //[RequiredIf("AddressType", 0, ErrorMessage = "Please select your Country.")]
         public Nullable<int> CountryId { get; set; }
     }
-
+    #region Get description of Enums name [Job]
     public static class Enums//Get description of Enum Job
     {
         /// <summary>
@@ -156,4 +158,5 @@ namespace EmsEntities
             return today.ToString();
         }
     }
+    #endregion
 }

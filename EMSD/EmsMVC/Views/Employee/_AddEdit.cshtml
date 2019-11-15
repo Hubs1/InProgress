@@ -2,10 +2,7 @@
 
 @Html.AntiForgeryToken()
 
-@ViewBag.Office
-
 @Html.HiddenFor(m => m.EId)
-@Html.HiddenFor(m => m.BirthDate)
 <div class="form-group">
     @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
@@ -21,7 +18,9 @@
         @*@Html.TextBoxFor(model => model.BirthDate, String.Format("{0:d}", Model.BirthDate, new { @class = "datefield", type = "date" }))*@
         @*@Html.TextBox("SelectedDate", "", new { @readonly = "readonly" })//jQuery UI DatePicker (Calendar)*@
         @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control" } })@*@value = DateTime.Now, @readonly = "readonly", placeholder="Enter your date of birth"*@
-        @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+        @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger", @id = "error" })
+        @*<span id="error" class="text-danger field-validation-valid" data-valmsg-for="DOB" data-valmsg-replace="true">
+            Replacement of [@Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger", @id = "error" })] </span>*@
     </div>
 </div>
 
@@ -83,3 +82,19 @@
 
 <div id="partialDiv" class="hide">
 </div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+    <script src="~/Scripts/Custom/DatePicker.js"></script>
+    @*<script>
+            $(function () {
+                $('#DOB').datepicker({
+                    format: 'dd-M-yyyy',//formatting selected date in [01-Nov-2019] format.
+                    todayHighlight: true,
+                    autoclose: true
+                });
+            });
+        </script>*@
+}

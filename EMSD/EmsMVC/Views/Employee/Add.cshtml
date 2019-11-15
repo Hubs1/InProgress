@@ -28,6 +28,7 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/Custom/AddressCategory.js")
     @Scripts.Render("~/Scripts/Custom/RequiredIf.js")
+    <script src="~/Scripts/moment.min.js"></script>
 
     @*1. Apply Bootstrap-Datepicker Plugin *@
 
@@ -38,14 +39,47 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
     <script>
         $(function () {
             $('#DOB').datepicker({
                 format: 'dd-M-yyyy',//formatting selected date in [01-Nov-2019] format.
                 todayHighlight: true,
-                autoclose: true
+                autoclose: true,
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down"
+                },
+                clearBtn: true
             });
         });
+
+        //$('#DOB').on("changeDate", function () {
+        $('#DOB').on("change", function () {            
+            var selectdate = $(this).val();
+            var birthday = +new Date(selectdate);
+            var age = ((Date.now() - birthday) / (31557600000));
+            //var age = getAge(selectdate);
+            if (age < 18) {
+                //alert(age + " is not valid");
+                //alert(selectdate + " is not valid. Select again!!!!!");
+                var msg = "Age must be 18 yrs old"
+                $("#error").text(selectdate+" is invalid. "+ msg);
+                setDate();
+            }
+        });
+
+        function setDate(){
+            var now = new Date();
+            var today = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
+            //debugger
+            //alert(today); //$('#DOB').val(today); //Formatting set wth of Moment.js
+            var onlyDate = moment(today, "dd/mm/yyyy").format('DD-MMM-YYYY'); // moment(today, "dd-M-yyyy"); var m=moment('01-Nov-2010').format('MM/DD/YYYY');
+            $('#DOB').val(onlyDate);
+        }
     </script>
     @* Apply Bootstrap-Datepicker Plugin *@
 
@@ -53,19 +87,19 @@
 
 
 @*Apply jqueryUI date picker calender image
-        Add jquery.UI.combined from nuGet to access datePicker
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
-        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
-        <script type="text/javascript">
-            $(function () {
-                $("#SelectedDate").datepicker({//jQuery UI DatePicker (Calendar)
-                    //$("#BirthDate").datepicker({
-                    showOn: 'button',
-                    buttonImageOnly: true,
-                    buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif"
+            Add jquery.UI.combined from nuGet to access datePicker
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
+            <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+            <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
+            <script type="text/javascript">
+                $(function () {
+                    $("#SelectedDate").datepicker({//jQuery UI DatePicker (Calendar)
+                        //$("#BirthDate").datepicker({
+                        showOn: 'button',
+                        buttonImageOnly: true,
+                        buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif"
+                    });
                 });
-            });
-        </script>
-        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-Apply jquery date picker calender image*@
+            </script>
+            <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    Apply jquery date picker calender image*@
