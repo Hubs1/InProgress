@@ -240,6 +240,11 @@ namespace EmsMVC.Controllers
             try
             {
                 var sortColumnIndex = Convert.ToInt32(Request["order[0][column]"]);
+                /*var colName = sortColumnIndex+1;
+                var colDept = colName+1;
+                var colSal = colDept+1;
+                var searchString = colName == 2 ? Request["columns[" + colName + "][search][value]"] : colDept == 3 ?
+                    Request["columns[" + colDept + "][search][value]"] : colSal == 4 ? Request["columns[" + colSal + "][search][value]"] : "";*/
                 var searchString = Request["columns[" + sortColumnIndex + "][search][value]"];//Individual column search in dataTable
                 var sortDirection = Request["order[0][dir]"];
                 var sortField = Request["columns[" + sortColumnIndex + "][name]"];

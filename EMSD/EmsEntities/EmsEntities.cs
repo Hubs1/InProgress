@@ -8,8 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
-
-using static EmsEntities.RequiredIfAttribute;
+//using static EmsEntities.CustomValidation;//RequiredIf
 using System.ComponentModel;//Description Attribute
 
 namespace EmsEntities
@@ -42,16 +41,24 @@ namespace EmsEntities
         public int DepartmentId { get; set; }
         public string DepartmentName { get; set; }
         public SelectList DepartmentList; // DropDownListFor
+
         [Required(ErrorMessage = "Enter your Salary")]//Using [Required] for custom message, Default Message - @Html.ValidationMessageFor()
         [Range(10000, 150000, ErrorMessage = "Salary between 10,000 to 1,50,000")]
         public int Salary { get; set; }
         [Required(ErrorMessage = "Gender can't be empty")]
         public byte Gender { get; set; }
         public string Sex { get; set; }
+
         [Required(ErrorMessage = "Choose your JobType.")]
+        [DisplayName("Job")]
+        //[RequiredIf("Active", true, ErrorMessage = "Select JobType")]
         public byte JobType { get; set; } // same name as SQL table column
         public string JobName { get; set; }// display JobName on Index page
+        [Display(Name = "Active")]
         public bool Active { get; set; }
+        [RequiredIf("Active", true, ErrorMessage = "Active text is required")]
+        //[Required]
+        public string Text { get; set; }
         public bool Status { get; set; }
 
         public enum Genders

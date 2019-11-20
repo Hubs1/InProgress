@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;//ValidationAttribute
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
+using System.Web.Mvc;//IClientValidatable
+
 namespace EmsEntities
 {
-    public class CustomValidators
+    public class CustomValidation
     {
-
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
         public abstract class ConditionalValidationAttribute : ValidationAttribute, IClientValidatable
         {
@@ -31,21 +31,21 @@ namespace EmsEntities
 
             protected override ValidationResult IsValid(object value, ValidationContext validationContext)
             {
-                // get a reference to the property this validation depends upon    
+                // get a reference to the property this validation depends upon  
                 var containerType = validationContext.ObjectInstance.GetType();
                 var field = containerType.GetProperty(this.DependentProperty);
                 if (field != null)
                 {
-                    // get the value of the dependent property    
+                    // get the value of the dependent property  
                     var dependentvalue = field.GetValue(validationContext.ObjectInstance, null);
 
-                    // compare the value against the target value    
+                    // compare the value against the target value  
                     if ((dependentvalue == null && this.TargetValue == null) || (dependentvalue != null && dependentvalue.Equals(this.TargetValue)))
                     {
-                        // match => means we should try validating this field    
+                        // match => means we should try validating this field  
                         if (!InnerAttribute.IsValid(value))
                         {
-                            // validation failed - return an error    
+                            // validation failed - return an error  
                             return new ValidationResult(this.ErrorMessage, new[] { validationContext.MemberName });
                         }
                     }
@@ -61,7 +61,7 @@ namespace EmsEntities
                     ValidationType = ValidationName,
                 };
                 string depProp = BuildDependentPropertyId(metadata, context as ViewContext);
-                // find the value on the control we depend on; if it's a bool, format it javascript style    
+                // find the value on the control we depend on; if it's a bool, format it javascript style  
                 string targetValue = (this.TargetValue ?? "").ToString();
                 if (this.TargetValue.GetType() == typeof(bool))
                 {
@@ -69,7 +69,7 @@ namespace EmsEntities
                 }
                 rule.ValidationParameters.Add("dependentproperty", depProp);
                 rule.ValidationParameters.Add("targetvalue", targetValue);
-                // Add the extra params, if any    
+                // Add the extra params, if any  
                 foreach (var param in GetExtraValidationParameters())
                 {
                     rule.ValidationParameters.Add(param);
@@ -80,7 +80,7 @@ namespace EmsEntities
             private string BuildDependentPropertyId(ModelMetadata metadata, ViewContext viewContext)
             {
                 string depProp = viewContext.ViewData.TemplateInfo.GetFullHtmlFieldId(this.DependentProperty);
-                // This will have the name of the current field appended to the beginning, because the TemplateInfo's context has had this fieldname appended to it.    
+                // This will have the name of the current field appended to the beginning, because the TemplateInfo's context has had this fieldname appended to it.  
                 var thisField = metadata.PropertyName + "_";
                 if (depProp.StartsWith(thisField))
                 {
@@ -102,9 +102,33 @@ namespace EmsEntities
             protected override IDictionary<string, object> GetExtraValidationParameters()
             {
                 return new Dictionary<string, object>
+                {
+                    { "rule", "required" }
+                };
+            }
+        }
+        public class RangeIfAttribute : ConditionalValidationAttribute
         {
-            { "rule", "required" }
-        };
+            private readonly int minimum;
+            private readonly int maximum;
+            protected override string ValidationName
+            {
+                get { return "rangeif"; }
+            }
+            public RangeIfAttribute(int minimum, int maximum, string dependentProperty, object targetValue)
+                : base(new RangeAttribute(minimum, maximum), dependentProperty, targetValue)
+            {
+                this.minimum = minimum;
+                this.maximum = maximum;
+            }
+            protected override IDictionary<string, object> GetExtraValidationParameters()
+            {
+                // Set the rule Range and the rule param [minumum,maximum]  
+                return new Dictionary<string, object>
+                {
+                    {"rule", "range"},
+                    { "ruleparam", string.Format("[{0},{1}]", this.minimum, this.maximum) }
+                };
             }
         }
     }

@@ -88,8 +88,9 @@ namespace EmsBAL
             return unitOfWork.DepartmentRepository.ActiveDepartment();
         }
 
+        #region ServerSide processing using DepartmentRepository.Get() custom method to get list of departments from database
         /// <summary>
-        /// This method returns the list of all departments
+        /// This method returns the list of all departments from database using ServerSide:true
         /// </summary>
         /// <remarks>Author: Harri</remarks>
         /// <param name="searchString">string to search</param>
@@ -98,18 +99,31 @@ namespace EmsBAL
         /// <param name="start">start from</param>
         /// <param name="length">length of records</param>
         /// <returns>list of Departmenta</returns>
-        public List<Department> DepartmentsServer(string searchString, string sortField, string sortDirection, int start, int length)
+        public List<DepartmentEntities> DepartmentsServer(string searchString, string sortField, string sortDirection, int start, int length)
         {
             List<Department> departments = new List<Department>();
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
                 var regex = new Regex(Regex.Escape(searchString), RegexOptions.IgnoreCase);
+                /*List<Employee> employee = new List<Employee>();
+                employee= unitOfWork.EmployeeRepository.Get(e => e.Name.Contains(searchString),unitOfWork.EmployeeRepository.GetOrderBy(sortField,sortDirection)).ToList();*/
 
-                departments = unitOfWork.DepartmentRepository.Get(d => d.Name.Contains(searchString) || d.Code.Contains(searchString),
-                    unitOfWork.DepartmentRepository.GetOrderBy(sortField, sortDirection)).ToList();
+                departments = unitOfWork.DepartmentRepository.Get(d => d.Name.Contains(searchString) || d.Code.Contains(searchString) ||
+                d.IsActive , unitOfWork.DepartmentRepository.GetOrderBy(sortField, sortDirection)).ToList();
             }
+            List<Department> displayDepartments = new List<Department>();
+            displayDepartments = departments.Skip(start).Take(length).ToList();
+            var departmentResult = from d in displayDepartments
+                                   select new DepartmentEntities
+                                   {
+                                       Name = d.Name,
+                                       Code = d.Code,
+                                       Active = d.IsActive,
+                                       EmployeeNames = string.Join(", ", d.Employees.Select(e => e.Name).ToArray())
+                                   };
 
-            return departments;
+            return departmentResult.ToList();//convert into List of DepartmentEntities
         }
+        #endregion
     }
 }

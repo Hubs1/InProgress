@@ -149,6 +149,7 @@ namespace EmsMVC.Controllers
             return Json(new { success = isSuccess, error = @TempData["Error"] });
         }
 
+        #region Department ServerSide(searching & sorting)
         [HttpGet]
         public ActionResult ServerSide()
         {
@@ -195,6 +196,7 @@ namespace EmsMVC.Controllers
             // draw, recordsTotal,recordsFiltered [Returned Data]
             return Json(new { data = departmentRecords, draw = Request["draw"], recordsTotal = totalRows, recordsFiltered = afterFilter }, JsonRequestBehavior.AllowGet);
         }
+        #endregion
 
         [HttpGet]
         public ActionResult ServerSideCopy()
@@ -205,28 +207,27 @@ namespace EmsMVC.Controllers
         [HttpPost]
         public ActionResult GetServerSideCopy(string draw, int start = 0, int length = 10)
         {
-            var searchString = Request["search[value]"];
             var sortColumnIndex = Convert.ToInt32(Request["order[0][column]"]);
+            var searchString = Request["columns[" + sortColumnIndex + "][search][value]"];
             var sortDirection = Request["order[0][dir]"];
             var sortField = Request["columns[" + sortColumnIndex + "][name]"];
             if (sortField == string.Empty)
             {
                 sortField = this.Request["columns[" + sortColumnIndex + "][data]"];
             }
-            //int recordsCount = this.departmentManager.AllDepartments.GetAgents(false).ToList().Count;//agentsController
-            var filteredDepartments = this.departmentManager.DepartmentsServer(searchString, sortField, sortDirection, start, length);
-            IEnumerable<Department> departmentRecords = filteredDepartments.Skip(start).Take(length).ToList();
+            int rowsTotal = this.departmentManager.AllDepartments().ToList().Count;
+            var departmentResult = this.departmentManager.DepartmentsServer(searchString, sortField, sortDirection, start, length);
+            int rowsFilter = departmentResult.Count();
 
-            var result = from d in filteredDepartments
-                         select new DepartmentEntities
-                         {
-                             Name = d.Name,
-                             Code = d.Code,
-                             Active = d.IsActive,
-                             EmployeeNames = string.Join(", ", d.Employees.Select(e => e.Name).ToArray())
-                         };
-
-            return Json(new { data = departmentRecords, draw = Request["draw"], recordsTotal = filteredDepartments.Count, recordsFiltered = filteredDepartments.Count }, JsonRequestBehavior.AllowGet);
+            return this.Json(
+                    new
+                    {
+                        draw = draw,
+                        recordsTotal = rowsTotal,
+                        recordsFiltered = rowsFilter,
+                        data = departmentResult
+                    },
+                JsonRequestBehavior.AllowGet);
         }
 
         #region Delete single record in database using action method Delete(int id)

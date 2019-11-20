@@ -93,11 +93,18 @@ else if (@TempData["Error"] != null)
         });
 
         function getDepartments() {
-            // Setup - add a text input to each footer cell
+            // Setup - add a text input column
+            $('#tblDepartment thead tr').clone(true).appendTo('#tblDepartment thead');//adding same line as thead .clone()
+            $('#tblDepartment thead tr:eq(1) th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            });
+
+            /*// Setup - add a text input to each header cell
             $('#tblDepartment thead th').each(function () {
                 var title = $('#example thead th').eq($(this).index()).text();
                 $(this).append('<span style="float: left;"><input type="text" placeholder="Search:"/></span>');
-            });
+            });*/
 
             var table = $('#tblDepartment').DataTable(
                 {
@@ -109,8 +116,8 @@ else if (@TempData["Error"] != null)
                     //"paging": true,
                     "destroy": true,
                     "ajax": { //ajax:to get or retrieve datas to populate HTML table
-                        "url": "/Department/GetServerSide",
-                        //"url": "/Department/GetServerSideCopy",
+                        //"url": "/Department/GetServerSide",
+                        "url": "/Department/GetServerSideCopy",
                         "type": "POST",
                         "datatype": "json"
                     },
@@ -132,7 +139,7 @@ else if (@TempData["Error"] != null)
                         { "data": "Name" },
                         { "data": "Code" },
                         {
-                            "data": "Active",
+                            "data": "Active", "name": "IsActive",//IsActive given in Department table declare same name as column for apply sorting
                             //orderable: false,
                             className: "text-center",
                             render: function (data, type, row) {
@@ -144,7 +151,7 @@ else if (@TempData["Error"] != null)
                             }
                         },
                         {
-                            "data": "EmployeeNames",
+                            "data": "EmployeeNames", orderable: false
                         },
                         {
                             data: null,
@@ -159,10 +166,33 @@ else if (@TempData["Error"] != null)
                     'order': [
                         [1, 'asc']
                     ],
+                    orderCellsTop: true,// set top column for ordering
                 });
 
             // Apply the search
-            table.columns().every(function () {
+            /*table.columns().eq(0).each(function (colIdx) {
+                $('input', table.column(colIdx).footer()).on('keyup change', function () {
+                    console.log(colIdx + '-' + this.value);
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });*/
+
+            table.columns().eq(0).each(function (i) {
+                $('input', this).on('keyup change', function () {
+                    if (table.column(i).search() !== this.value) {
+                        table
+                            .column(i)
+                            .search(this.value)
+                            .draw();
+                    }
+                });
+            });
+
+            // Apply the search
+            /*table.columns().every(function () {
                 var that = this;
 
                 $('input', this.header()).on('keyup change', function () {
@@ -170,7 +200,7 @@ else if (@TempData["Error"] != null)
                         .search(this.value)
                         .draw();
                 });
-            });
+            });*/
         }
 
         $(document).on('click', '#lnkEditUser', function (e) {
