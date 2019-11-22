@@ -35,9 +35,16 @@
             @Html.DisplayFor(modelItem => item.Designation)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @if (User.IsInRole("Admin")) //Role based action display
+            {
+                @Html.ActionLink("Edit |", "Edit", new { id = item.Id })
+                @Html.ActionLink(" Details |", "Details", new { id = item.Id })
+                @Html.ActionLink(" Delete", "Delete", new { id = item.Id })
+            }
+            else
+            {
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
+            }
         </td>
     </tr>
 }

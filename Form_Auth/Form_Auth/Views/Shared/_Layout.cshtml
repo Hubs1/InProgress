@@ -23,7 +23,13 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="text-success">Hi! @Html.Label(@User.Identity.Name) @User.Identity.Name</li>
-                        <li>@Html.ActionLink("Hi "+@User.Identity.Name, "Manage", "Account")</li>
+                        <!--Role based menu display [User.IsInRole("Admin")]-->
+                            if (User.IsInRole("Admin"))
+                            {
+                                <li>@Html.ActionLink("Create", "Create", "Office")</li>
+                            }
+                        <!--Role based menu display [User.IsInRole("Admin")]-->
+                        <li>@Html.ActionLink("Hi " + @User.Identity.Name, "Manage", "Account")</li>
                         <li>@Html.ActionLink("LogOut", "Logout", "Account")</li>
                     }
                     else
