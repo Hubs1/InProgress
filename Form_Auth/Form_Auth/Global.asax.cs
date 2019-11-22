@@ -16,6 +16,7 @@ namespace Form_Auth
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            GlobalFilters.Filters.Add(new AuthorizeAttribute());// globally apply authorise filter on every controller [HTTP Error 401.0 - Unauthorized]
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Form_Auth.Controllers
         private OfficeContext db = new OfficeContext();
 
         // GET: Office
+        [AllowAnonymous]// Index() is accessible to authorise and unauthorise user
         public ActionResult Index()
         {
             return View(db.Forms.ToList());
@@ -37,6 +38,7 @@ namespace Form_Auth.Controllers
         }
 
         // GET: Office/Create
+        [Authorize(Roles ="Admin, Employee")] // providing roles to Admin, Employee for creating records
         public ActionResult Create()
         {
             return View();
@@ -60,6 +62,7 @@ namespace Form_Auth.Controllers
         }
 
         // GET: Office/Edit/5
+        [Authorize(Roles = "Admin")] // only Admin can edit records
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -79,6 +82,7 @@ namespace Form_Auth.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")] // only Admin can edit records apply in both GET & POST
         public ActionResult Edit([Bind(Include = "Id,Name,Salary,Designation")] Form form)
         {
             if (ModelState.IsValid)
@@ -91,6 +95,7 @@ namespace Form_Auth.Controllers
         }
 
         // GET: Office/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)

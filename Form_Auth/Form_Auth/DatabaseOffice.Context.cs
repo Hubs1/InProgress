@@ -27,7 +27,6 @@ namespace Form_Auth
     
         public virtual DbSet<Form> Forms { get; set; }
         public virtual DbSet<User> Users { get; set; }
-
-        public System.Data.Entity.DbSet<Form_Auth.Models.UserFields> UserFields { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
     }
 }

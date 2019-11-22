@@ -8,9 +8,10 @@ using System.Web.Security;// access form authentication (cookies)
 
 namespace Form_Auth.Controllers
 {
+    [AllowAnonymous]// accessible with login or logout, to override authorise filter add in global.asax
     public class AccountController : Controller
     {
-        public ActionResult Login() // ModelClass- UserFields
+        public ActionResult Login() // ModelClass- UserFields for creating view
         {
             return View();
         }
@@ -30,7 +31,7 @@ namespace Form_Auth.Controllers
             }
             return View();
         }
-        public ActionResult Signup() // ModelClass- User [User.cs access from .edmx]
+        public ActionResult Signup() // ModelClass- User [User.cs access from .edmx] for creating view
         {
             return View();
         }
@@ -42,6 +43,15 @@ namespace Form_Auth.Controllers
                 userContext.Users.Add(user);
                 userContext.SaveChanges();
             }
+            return RedirectToAction("Login");
+        }
+
+        public ActionResult Logout() // ModelClass- UserFields
+        {
+            FormsAuthentication.SignOut();
+            //Session.Clear();
+            //Session.RemoveAll();
+            //Session.Abandon(); // it will clear the session at the end of request
             return RedirectToAction("Login");
         }
     }
