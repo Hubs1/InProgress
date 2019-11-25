@@ -129,5 +129,24 @@ namespace Form_Auth.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult Manage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Admin")] // only Admin can edit records apply in both GET & POST
+        public ActionResult Manage([Bind(Include = "Id,UserName,Password")] User user)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(user);
+        }
     }
 }

@@ -22,14 +22,33 @@
                 <ul class="nav navbar-nav">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="text-success">Hi! @Html.Label(@User.Identity.Name) @User.Identity.Name</li>
+                        @*<li class="navbar-text">
+                            <p class="nav text-success">Hi! @Html.Label(@User.Identity.Name)</p>
+                        </li>*@
+
                         <!--Role based menu display [User.IsInRole("Admin")]-->
-                            if (User.IsInRole("Admin"))
-                            {
-                                <li>@Html.ActionLink("Create", "Create", "Office")</li>
-                            }
+                        if (User.IsInRole("Admin")) //tells current principal belongs to specified role.
+                        {
+                            <li>@Html.ActionLink("Create", "Create", "Office")</li>
+                            @*<li>@Html.ActionLink("Update", "Edit", "Office")</li> //not run because [new { id = item.Id } id not found] *@
+                        }
                         <!--Role based menu display [User.IsInRole("Admin")]-->
-                        <li>@Html.ActionLink("Hi " + @User.Identity.Name, "Manage", "Account")</li>
+                        @*<li>@Html.ActionLink("Hi " + @User.Identity.Name, "Manage", "Account")</li>
+            <li>@Html.ActionLink("LogOut", "Logout", "Account")</li>*@
+                    }
+                    else
+                    {
+                        @*<li>@Html.ActionLink("LogIn", "Login", "Account")</li>*@
+                    }
+                </ul>
+
+                <ul class="nav navbar-nav pull-right">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="navbar-text">
+                            <p class="nav text-success">Hi! @Html.Label(@User.Identity.Name)</p>
+                        </li>
+                        @*<li>@Html.ActionLink("Hi " + @User.Identity.Name, "Manage", "Account")</li>*@
                         <li>@Html.ActionLink("LogOut", "Logout", "Account")</li>
                     }
                     else
