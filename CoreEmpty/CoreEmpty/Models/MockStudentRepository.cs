@@ -24,5 +24,11 @@ namespace CoreEmpty.Models
             return _studentList.FirstOrDefault(e => e.Id == id);
             throw new NotImplementedException();
         }
+
+        public IEnumerable<Student> GetStudents()
+        {
+            return _studentList;
+            throw new NotImplementedException();
+        }
     }
 }

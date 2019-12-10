@@ -8,5 +8,6 @@ namespace CoreEmpty.Models
     public interface IStudentRepository //creates for managing class with database
     {
         Student GetStudent(int id); // declaration of this method
+        IEnumerable<Student> GetStudents();// declare for get all students
     }
 }

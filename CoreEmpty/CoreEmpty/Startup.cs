@@ -32,8 +32,10 @@ namespace CoreEmpty
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseFileServer();// go to on default.html
-            app.UseStaticFiles();
+            //app.UseDefaultFiles();// Call first before app.UseStaticFiles() [show default.html]
+            //app.UseStaticFiles();// For the wwwroot folder
+            //app.UseFileServer();// go to on default.html [It combines the functionality of UseStaticFiles() and UseDefaultFiles(). It take care of the static file as the default start page.]
+
             app.UseMvcWithDefaultRoute();// go to on {controller=Home}/{action=Index}/{id?}
 
             app.Run(async (context) =>

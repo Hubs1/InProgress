@@ -1,0 +1,11 @@
+﻿@model CoreEmpty.ViewModels.HomeDetails
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>@ViewData["Title"]</h2>
+<h4>@Model.PageTitle</h4>
+<div>
+    Name: @Model.Student.Name <br/>
+    Email: @Model.Student.Email
+</div>
