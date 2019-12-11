@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Entities.UserEntities>
+@{
+    ViewBag.Title = "User Records";
+}
+@Styles.Render("~/Content/bootstrapDatatablesCss")
+<h2>Manage User</h2>
+<div class="pull-right">
+    @Html.ActionLink("Add User", "Create", "User", new { @class = "btn btn-primary" })
+</div>
+<br />
+<table class="table" id="tblUser">
+    <thead>
+        <tr>
+            <th>
+                FirstName
+            </th>
+            <th>
+                LastName
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+</table>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryDatatables")
+    @Scripts.Render("~/bundles/bootstrapDatatables")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getUsers();
+        });
+        function getUsers() {
+            var table = $('#tblUser').DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": false, // for process server side
+                "filter": true, // this is for disable filter (search box)
+                "pageLength": 10,
+                "destroy": true,
+                "ajax": { //ajax:to get or retrieve datas to populate HTML table
+                    "url": "/User/GetList",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                //"fixedHeader": true,
+                "columns": [ //columns: it tells what columns associated with each bind column
+                    { "data": "FirstName" },
+                    { "data": "LastName" },
+                    { "data": "Email" },
+                    {
+                        "data": "Status",
+                        orderable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            if (data === true) {
+                                return '<span class="fas fa-lock" style="color:red;text-decoration:none;"></span>';
+                            }
+                            else
+                                return '<span class="fas fa-unlock" style="color:green;text-decoration:none;"></span>';
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            return '<a id="lnkEditUser" data-user-id="' + data.Id + '" href="#" title="Edit User" class="fas fa-user-edit" style="text-decoration:none;"></a>';
+                        }
+                    }
+                ]
+            });
+        }
+        $(document).on('click', '#lnkEditUser', function (e) {
+        window.location.href = '@Url.Action("Edit", "User")?id=' + $(this).data('user-id');
+        })
+    </script>
+}

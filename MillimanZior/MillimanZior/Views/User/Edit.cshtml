@@ -1,0 +1,19 @@
+﻿@model Entities.UserEntities
+
+@{
+    ViewBag.Title = "Edit";
+}
+<h2>Edit</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.Partial("_AddEdit")
+
+    <div class="form-group">
+        <div class="col-md-offset-3 col-md-2">
+            @Html.ActionLink("Cancel", "Index", "User", new { @class = "btn btn-warning" })
+            <input type="submit" value="Edit" class="btn btn-success" />
+            @*@Html.ActionLink("Save", "Create", "User", new { @class = "btn btn-success" })*@
+        </div>
+    </div>
+}
